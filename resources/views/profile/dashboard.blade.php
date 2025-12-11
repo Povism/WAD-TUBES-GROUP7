@@ -61,7 +61,7 @@ $icons = [
         <div class="container mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <img src="{{ $logo }}" alt="Logo" class="h-10 w-auto" />
-                <span class="text-2xl font-bold text-blue-800">Tel-U Loot</span>
+                <span class="text-2xl font-bold text-red-800">Tel-U Loot</span>
             </div>
 
             <div class="hidden md:flex items-center space-x-6">
@@ -209,7 +209,7 @@ $icons = [
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
                         <span class="text-green-400 w-[28px] h-[28px]">{!! $icons['Leaf'] !!}</span>
-                        <h4 class="text-xl font-bold">Tell-U Loots</h4>
+                        <h4 class="text-xl font-bold">Tel-U Loots</h4>
                     </div>
                     <p class="text-gray-400">
                         A sustainable second-hand marketplace for Telkom University students. Supporting SDG 12.
@@ -246,7 +246,7 @@ $icons = [
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-                <p>© 2025 Tell-U Loots — Group 7, Telkom University. Built with ❤️ for sustainability.</p>
+                <p>© 2025 Tel-U Loots — Group 7, Telkom University. Built with ❤️ for sustainability.</p>
             </div>
         </div>
     </footer>
