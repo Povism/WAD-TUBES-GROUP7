@@ -91,12 +91,12 @@ $forumPosts = [
             <h2 class="text-4xl md:text-5xl font-bold mb-4">Buy, Sell, Reuse — Sustainably at Telkom University</h2>
             <p class="text-xl mb-8 max-w-2xl mx-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit (slogan).</p>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <button class="bg-white text-blue-700 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 flex items-center justify-center">
+                <a href="/items/create" class="bg-white text-blue-700 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 flex items-center justify-center">
                     <span class="w-[20px] h-[20px] mr-2">{!! $icons['Plus'] !!}</span> Post an Item
-                </button>
-                <button class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-full font-semibold hover:bg-white/10">
-                    <a href="/items" >Browse Items</a>
-                </button>
+                </a>
+                <a href="/items" class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-full font-semibold hover:bg-white/10 flex items-center justify-center">
+                    Browse Items
+                </a>
             </div>
         </div>
     </section>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tel-U Loot - User Profile Dashboard</title>
+    <title>Tel-U Loot - User Reviews</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-gray-50">
@@ -29,11 +29,34 @@ $dashboardNav = [
     ['id' => 'reviews', 'name' => 'Reviews', 'icon' => 'Star'],
 ];
 
-$activeListings = [
-    [ 'id' => 1, 'title' => 'MacBook Air M1', 'price' => 'Rp 8.500.000', 'status' => 'Active', 'views' => 120 ],
-    [ 'id' => 2, 'title' => 'Data Structures Textbook', 'price' => 'Rp 75.000', 'status' => 'Pending', 'views' => 45 ],
-    [ 'id' => 3, 'title' => 'Winter Jacket', 'price' => 'Rp 200.000', 'status' => 'Active', 'views' => 88 ],
+// Mock data for Reviews
+$reviews = [
+    [
+        'id' => 1,
+        'reviewer_name' => 'Fahmi Ahmad',
+        'item_title' => 'MacBook Air M1',
+        'rating' => 5,
+        'comment' => 'Fast response and the laptop was exactly as described! Great deal, very happy.',
+        'date' => '2 days ago'
+    ],
+    [
+        'id' => 2,
+        'reviewer_name' => 'Siti Nuraini',
+        'item_title' => 'Data Structures Textbook',
+        'rating' => 4,
+        'comment' => 'Book arrived quickly and in good condition. Missing a few highlight marks, but overall satisfied.',
+        'date' => '1 week ago'
+    ],
+    [
+        'id' => 3,
+        'reviewer_name' => 'Arie Pratama',
+        'item_title' => 'Old Monitor Stand',
+        'rating' => 5,
+        'comment' => 'Smooth transaction. The item was perfect for what I needed. Highly recommend!',
+        'date' => '1 month ago'
+    ],
 ];
+
 
 // PHP/SVG representation of Lucide icons (adjusted for size)
 $icons = [
@@ -112,12 +135,10 @@ $icons = [
                 <nav class="bg-white p-2 rounded-xl shadow-md">
                     @foreach ($dashboardNav as $navItem)
                         @php
-                            // Check if current item is the active link (Mocking 'listings' as default active view)
-                            $isActive = ($navItem['id'] === 'listings');
-                            
-                            // Set the correct URL for navigation
+                            // Set 'reviews' as the active link on this page
+                            $isActive = ($navItem['id'] === 'reviews'); 
+                            // Determine the correct href for the link
                             $linkHref = ($navItem['id'] === 'reviews') ? '/profile/reviews' : '/profile';
-
                             $linkClasses = $isActive
                                 ? 'bg-blue-600 text-white shadow-lg'
                                 : 'text-gray-700 hover:bg-gray-100';
@@ -133,74 +154,51 @@ $icons = [
                     </a>
                 </nav>
             </div>
-
             <div class="lg:col-span-3 space-y-8">
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-white p-5 rounded-xl shadow-md border-b-4 border-blue-500">
-                        <p class="text-sm font-medium text-gray-500">Active Listings</p>
-                        <p class="text-3xl font-bold text-gray-800 mt-1">{{ $user['listings_active'] }}</p>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl shadow-md border-b-4 border-green-500">
-                        <p class="text-sm font-medium text-gray-500">Items Sold</p>
-                        <p class="text-3xl font-bold text-gray-800 mt-1">{{ $user['listings_sold'] }}</p>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl shadow-md border-b-4 border-purple-500">
-                        <p class="text-sm font-medium text-gray-500">Total Revenue (Est.)</p>
-                        <p class="text-3xl font-bold text-gray-800 mt-1">Rp 12M+</p>
-                    </div>
-                </div>
+                <h2 class="text-2xl font-extrabold text-gray-800 border-b pb-2">Customer Feedback</h2>
 
-                <div id="listings" class="bg-white rounded-xl shadow-md p-6">
-                    <div class="flex justify-between items-center mb-4 border-b pb-3">
-                        <h2 class="text-xl font-bold text-gray-800">My Active Listings ({{ count($activeListings) }})</h2>
-                        <a href="items/create" class="bg-blue-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                            Create New Listing
-                        </a>
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6 border-b pb-3">
+                        <h3 class="text-xl font-bold text-gray-800">Reviews Received ({{ count($reviews) }})</h3>
+                        <div class="flex items-center text-lg font-semibold text-yellow-600">
+                            <span class="w-[20px] h-[20px] mr-1">{!! $icons['Star'] !!}</span> 
+                            {{ $user['rating'] }} <span class="text-gray-500 text-sm ml-1">/ 5.0</span>
+                        </div>
                     </div>
-                    
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Views</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach ($activeListings as $listing)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $listing['title'] }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-bold">{{ $listing['price'] }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            @if ($listing['status'] == 'Active')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">{{ $listing['status'] }}</span>
-                                            @elseif ($listing['status'] == 'Pending')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">{{ $listing['status'] }}</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex items-center">
-                                            <span class="w-[16px] h-[16px] mr-1 text-gray-400">{!! $icons['Eye'] !!}</span> {{ $listing['views'] }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
-                                            <a href="#" class="text-blue-600 hover:text-blue-900">Edit</a>
-                                            <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
 
-                <div class="bg-white p-6 rounded-xl shadow-md h-40 flex items-center justify-center text-gray-500" id="purchases">
-                    Content for My Purchases will appear here.
+                    <div class="space-y-6">
+                        @foreach ($reviews as $review)
+                            <div class="border-b pb-4 last:border-b-0">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div>
+                                        <p class="font-bold text-gray-800">{{ $review['reviewer_name'] }}</p>
+                                        <div class="flex items-center text-yellow-500 text-sm">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <span class="w-4 h-4 mr-0.5">
+                                                    @if ($i <= $review['rating'])
+                                                        {!! $icons['Star'] !!} @else
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star text-gray-300"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                                    @endif
+                                                </span>
+                                            @endfor
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-gray-400">{{ $review['date'] }}</p>
+                                </div>
+
+                                <p class="text-gray-700 italic mb-2">"{{ $review['comment'] }}"</p>
+                                
+                                <div class="text-xs text-gray-500 flex items-center">
+                                    <span class="w-[16px] h-[16px] mr-1 text-red-500">{!! $icons['ShoppingBag'] !!}</span> 
+                                    Sold: <span class="font-medium ml-1 text-gray-700">{{ $review['item_title'] }}</span>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
-        </div>
+            </div>
     </section>
 
 
@@ -222,7 +220,7 @@ $icons = [
                         <li><a href="{{ url('/') }}" class="hover:text-white">Home</a></li>
                         <li><a href="{{ url('/items') }}" class="hover:text-white">Items</a></li>
                         <li><a href="{{ url('/forum') }}" class="hover:text-white">Forum</a></li>
-                        <li><a href="#" class="hover:text-white">My Profile</a></li>
+                        <li><a href="{{ url('/profile') }}" class="hover:text-white">My Profile</a></li>
                     </ul>
                 </div>
                 <div>

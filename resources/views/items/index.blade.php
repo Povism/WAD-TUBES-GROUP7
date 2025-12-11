@@ -142,33 +142,15 @@ $icons = [
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    @foreach ($itemListings as $item)
+                   @foreach ($itemListings as $item)
                         <div class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden relative">
-                            <img src="{{ $item['img'] }}" alt="{{ $item['title'] }}" class="w-full h-48 object-cover" />
-                            @if ($item['eco'])
-                                <div class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-bl flex items-center">
-                                    <span class="w-[16px] h-[16px] mr-1">{!! $icons['Leaf'] !!}</span> Eco-Friendly
-                                </div>
-                            @endif
                             <div class="p-4">
-                                <a href="#" class="font-semibold text-lg text-gray-800 line-clamp-2 hover:text-blue-700 transition">{{ $item['title'] }}</a>
+                                <a href="{{ url('/items/' . $item['id']) }}" class="font-semibold text-lg text-gray-800 line-clamp-2 hover:text-blue-700 transition">
+                                    {{ $item['title'] }}
+                                </a>
+                                
                                 <p class="text-green-600 font-bold text-xl mt-1">{{ $item['price'] }}</p>
-
-                                <div class="text-sm text-gray-500 mt-2 flex justify-between items-center">
-                                    <span>{{ $item['condition'] }} • {{ $item['category'] }}</span>
-                                    <button class="text-blue-600 hover:text-blue-800" title="Message Seller">
-                                        <span class="w-[18px] h-[18px]">{!! $icons['MessageCircle18'] !!}</span>
-                                    </button>
                                 </div>
-                                <div class="flex items-center mt-3 pt-3 border-t">
-                                    <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs font-bold text-white uppercase mr-2">{{ substr($item['seller'], 0, 1) }}</div>
-                                    <span class="text-sm text-gray-600">{{ $item['seller'] }}</span>
-                                    <span class="flex items-center ml-auto">
-                                        <span class="w-[16px] h-[16px] text-yellow-400 mr-1">{!! $icons['Star'] !!}</span>
-                                        <span class="text-sm font-medium text-gray-700">{{ $item['rating'] }}</span>
-                                    </span>
-                                </div>
-                            </div>
                         </div>
                     @endforeach
                 </div>

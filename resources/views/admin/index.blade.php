@@ -14,11 +14,11 @@
 $logo = asset('images/logo.png');
 $profile = asset('images/profile.jpg');
 
+// REVISED: Removed 'Pending Reviews' and 'New Discussions'
 $adminStats = [
     ['title' => 'Total Users', 'value' => '4,521', 'icon' => 'Users', 'color' => 'blue'],
     ['title' => 'Active Listings', 'value' => '689', 'icon' => 'Package', 'color' => 'green'],
-    ['title' => 'Pending Reviews', 'value' => '12', 'icon' => 'AlertTriangle', 'color' => 'red'],
-    ['title' => 'New Discussions', 'value' => '45', 'icon' => 'MessageSquare', 'color' => 'purple'],
+    ['title' => 'Categories & Tags', 'value' => '45', 'icon' => 'Tags', 'color' => 'purple'], // Changed from Discussions
 ];
 
 $recentListings = [
@@ -29,17 +29,12 @@ $recentListings = [
 ];
 
 // PHP/SVG representation of Lucide icons
-// PHP/SVG representation of Lucide icons
 $icons = [
-    'ShoppingCart' => '<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h1.9l2.7 13.9c.1 0 .2 0 .3 0h11.8c.2 0 .4-.1.5-.2l4-8c.1-.2.1-.4 0-.6-.1-.2-.3-.3-.5-.3H6.85"/></svg>',
-    'MessageCircle' => '<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle"><path d="M7.9 20.3c.4.1.8.1 1.2.1h6.8c1.7 0 3-1.3 3-3V6c0-1.7-1.3-3-3-3H9c-1.7 0-3 1.3-3 3v11.5c0 .3.1.5.3.7l4 4c.2.2.5.3.7.3z"/></svg>',
     'MessageSquare' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
     'LayoutDashboard' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>',
     'Package' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package"><path d="m7.5 4.27 9 5.15"/><path d="m21 15.35-9-5.15-9 5.15"/><path d="m7.5 19.73 9-5.15"/><path d="M3 10.5v10l9 5 9-5v-10l-9-5z"/></svg>',
-    'ListChecks' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-checks"><path d="m3 12 2 2 4-4"/><path d="M12 6H3"/><path d="M16 12H3"/><path d="M16 18H3"/><path d="M16 6h6"/><path d="M16 12h6"/><path d="M16 18h6"/></svg>',
     'Users' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
     'Tags' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-tags"><path d="M9 18l1.3-3.9L22 4l-4-4L9 18z"/><path d="M5 21l-3-3V5a2 2 0 0 1 2-2h3"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>',
-    'AlertTriangle' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-9-15-9 15h18z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
     'LogOut' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>',
     'Leaf' => '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-leaf"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 21.1 2.2 22 8c.8 4.7-4.3 8.6-7.3 10.4"/><path d="M17 12c-2.3-1.8-5.3-3-8-3-1.8 0-3.4-.6-4.9-1.3C5.1 11.2 5 12.3 5 14c0 4.4 3.6 8 8 8h1"/></svg>',
     'MapPin' => '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M12 22s8-4 8-12c0-4.4-3.6-8-8-8-4.4 0-8 3.6-8 8s8 12 8 12z"/><circle cx="12" cy="10" r="3"/></svg>',
@@ -48,10 +43,10 @@ $icons = [
 ];
 
 $colorClasses = [
-    'blue' => 'bg-blue-500 text-blue-800',
-    'green' => 'bg-green-500 text-green-800',
-    'red' => 'bg-red-500 text-red-800',
-    'purple' => 'bg-purple-500 text-purple-800',
+    'blue' => 'border-blue-600 text-blue-600',
+    'green' => 'border-green-600 text-green-600',
+    'red' => 'border-red-600 text-red-600',
+    'purple' => 'border-purple-600 text-purple-600',
 ];
 
 $statusColors = [
@@ -103,24 +98,18 @@ $statusColors = [
                     <a href="#" class="flex items-center p-3 rounded-lg bg-blue-100 text-blue-700 font-medium transition mb-1">
                         <span class="mr-3">{!! $icons['LayoutDashboard'] !!}</span> Dashboard Overview
                     </a>
-                    <a href="#" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
+                    <a href="admin/items" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
                         <span class="mr-3 text-red-500">{!! $icons['Package'] !!}</span> Listings Management
                     </a>
-                    <a href="#" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
-                        <span class="mr-3 text-blue-500">{!! $icons['Users'] !!}</span> User Management
-                    </a>
-                    <a href="#" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
+                    <a href="/admin/tags" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
                         <span class="mr-3 text-green-500">{!! $icons['Tags'] !!}</span> Categories & Tags
                     </a>
-                    <a href="#" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100">
-                        <span class="mr-3 text-purple-500">{!! $icons['MessageSquare'] !!}</span> Forum Moderation
-                    </a>
-                </nav>
+                    </nav>
             </div>
 
             <div class="lg:col-span-3 space-y-8">
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     @foreach ($adminStats as $stat)
                         @php
                             $borderClass = "border-{$stat['color']}-600";
@@ -133,7 +122,7 @@ $statusColors = [
                                     <p class="text-3xl font-bold text-gray-900 mt-1">{{ $stat['value'] }}</p>
                                 </div>
                                 <div class="p-3 rounded-full bg-gray-100 {{ $iconColorClass }}">
-                                     <span class="w-[24px] h-[24px]">{!! $icons[$stat['icon']] ?? '' !!}</span>
+                                    <span class="w-[24px] h-[24px]">{!! $icons[$stat['icon']] ?? '' !!}</span>
                                 </div>
                             </div>
                         </div>
@@ -175,23 +164,6 @@ $statusColors = [
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-3">Admin Quick Tools</h2>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button class="text-center p-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">
-                            Ban User
-                        </button>
-                        <button class="text-center p-3 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition">
-                            Clear Cache
-                        </button>
-                        <button class="text-center p-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition">
-                            Create Promo Code
-                        </button>
-                        <button class="text-center p-3 rounded-lg bg-yellow-600 text-white font-semibold hover:bg-yellow-700 transition">
-                            Manage Reports
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -213,16 +185,15 @@ $statusColors = [
                     <ul class="space-y-2 text-gray-400">
                         <li><a href="{{ url('/') }}" class="hover:text-white">Home</a></li>
                         <li><a href="{{ url('/items') }}" class="hover:text-white">Items</a></li>
-                        <li><a href="{{ url('/forum') }}" class="hover:text-white">Forum</a></li>
                         <li><a href="{{ url('/profile') }}" class="hover:text-white">My Profile</a></li>
                     </ul>
                 </div>
                 <div>
                     <h5 class="font-semibold mb-4">Contact</h5>
                     <ul class="space-y-2 text-gray-400">
-                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['MapPin'] !!}</span> Telkom University, Bandung</li>
-                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['Mail'] !!}</span> telloots@telkomuniversity.ac.id</li>
-                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['Phone'] !!}</span> +62 22 1234 5678</li>
+                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['MapPin'] ?? '' !!}</span> Telkom University, Bandung</li>
+                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['Mail'] ?? '' !!}</span> telloots@telkomuniversity.ac.id</li>
+                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['Phone'] ?? '' !!}</span> +62 22 1234 5678</li>
                     </ul>
                 </div>
                 <div>

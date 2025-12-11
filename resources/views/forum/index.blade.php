@@ -89,7 +89,7 @@ $icons = [
             <div class="lg:col-span-1 space-y-6">
                 <div class="bg-white p-6 rounded-xl shadow-md">
                     <h4 class="font-bold text-lg mb-4 text-blue-800">Start a Discussion</h4>
-                    <a href="#" class="w-full flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+                    <a href="forum/create" class="w-full flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
                         <span class="w-[20px] h-[20px] mr-2">{!! $icons['Plus'] !!}</span> New Thread
                     </a>
                 </div>
