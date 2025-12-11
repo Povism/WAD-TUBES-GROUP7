@@ -65,8 +65,8 @@ $forumPosts = [
             <div class="hidden md:flex items-center space-x-6">
                 <nav class="flex space-x-6">
                     <a href="#" class="font-medium text-gray-700 hover:text-blue-700">Home</a>
-                    <a href="#forum" class="font-medium text-gray-700 hover:text-blue-700">Forum</a>
-                    <a href="#items" class="font-medium text-gray-700 hover:text-blue-700">Items</a>
+                    <a href="forum" class="font-medium text-gray-700 hover:text-blue-700">Forum</a>
+                    <a href="items" class="font-medium text-gray-700 hover:text-blue-700">Items</a>
                 </nav>
             </div>
 
@@ -204,10 +204,10 @@ $forumPosts = [
                 <div>
                     <h5 class="font-semibold mb-4">Navigation</h5>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white">Home</a></li>
-                        <li><a href="#items" class="hover:text-white">Items</a></li>
-                        <li><a href="#forum" class="hover:text-white">Forum</a></li>
-                        <li><a href="#" class="hover:text-white">My Profile</a></li>
+                        <li><a href="/" class="hover:text-white">Home</a></li>
+                        <li><a href="/items" class="hover:text-white">Items</a></li>
+                        <li><a href="/forum" class="hover:text-white">Forum</a></li>
+                        <li><a href="/profile" class="hover:text-white">My Profile</a></li>
                     </ul>
                 </div>
                 <div>
