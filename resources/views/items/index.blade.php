@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tell-U Loot - Browse Items</title>
+    <title>Tel-U Loot - Browse Items</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-gray-50">
@@ -46,7 +46,7 @@ $icons = [
         <div class="container mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <img src="{{ $logo }}" alt="Logo" class="h-10 w-auto" />
-                <span class="text-2xl font-bold text-blue-800">Tell-U Loot</span>
+                <span class="text-2xl font-bold text-red-800">Tel-U Loot</span>
             </div>
 
             <div class="hidden md:flex items-center space-x-6">
@@ -59,13 +59,15 @@ $icons = [
 
             <div class="flex items-center space-x-4">
                 <button class="p-2 rounded-full hover:bg-gray-100 relative">
-                    <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['ShoppingCart'] !!}</span>
+                    <a href="/cart" class="text-gray-700 w-[25px] h-[25px]">{!! $icons['ShoppingCart'] !!}</a>
                     <span class="absolute -top-1.5 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
                 </button>
                 <button class="p-2 rounded-full hover:bg-gray-100">
                     <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['MessageCircle'] !!}</span>
                 </button>
-                <img src="{{ $profile }}" alt="Profile" class="w-8 h-8 rounded-full" />
+                <a href="profile">
+                <img src="{{ $profile }}" alt="Profile" class="w-8 h-8 rounded-full" /></a>
+                </button>
             </div>
         </div>
     </header>
@@ -192,7 +194,8 @@ $icons = [
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
                         <span class="text-green-400 w-[28px] h-[28px]">{!! $icons['Leaf'] !!}</span>
-                        <h4 class="text-xl font-bold">Tell-U Loots</h4>
+                        
+                        
                     </div>
                     <p class="text-gray-400">
                         A sustainable second-hand marketplace for Telkom University students. Supporting SDG 12.
@@ -204,7 +207,7 @@ $icons = [
                         <li><a href="{{ url('/') }}" class="hover:text-white">Home</a></li>
                         <li><a href="#" class="hover:text-white">Items</a></li>
                         <li><a href="{{ url('/forum') }}" class="hover:text-white">Forum</a></li>
-                        <li><a href="#" class="hover:text-white">My Profile</a></li>
+                        <li><a href="{{ url('/profile') }}" class="hover:text-white">My Profile</a></li>
                     </ul>
                 </div>
                 <div>
@@ -229,7 +232,7 @@ $icons = [
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-                <p>© 2025 Tell-U Loots — Group 7, Telkom University. Built with ❤️ for sustainability.</p>
+                <p>© 2025 Tel-U Loots — Group 7, Telkom University. Built with ❤️ for sustainability.</p>
             </div>
         </div>
     </footer>

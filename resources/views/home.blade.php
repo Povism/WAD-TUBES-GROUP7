@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tell-U Loot - Sustainable Marketplace</title>
+    <title>Tel-U Loot - Sustainable Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-gray-50">
@@ -72,13 +72,16 @@ $forumPosts = [
 
             <div class="flex items-center space-x-4">
                 <button class="p-2 rounded-full hover:bg-gray-100 relative">
-                    <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['ShoppingCart'] !!}</span>
+                    <a href="/cart" class="text-gray-700 w-[25px] h-[25px]">{!! $icons['ShoppingCart'] !!}</a>
                     <span class="absolute -top-1.5 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
                 </button>
                 <button class="p-2 rounded-full hover:bg-gray-100">
                     <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['MessageCircle'] !!}</span>
                 </button>
-                <img src="{{ $profile }}" alt="Profile" class="w-8 h-8 rounded-full" />
+                <button class="p-2 rounded-full hover:bg-gray-100">
+                <a href="profile">
+                <img src="{{ $profile }}" alt="Profile" class="w-8 h-8 rounded-full" /></a>
+                </button>
             </div>
         </div>
     </header>
@@ -92,7 +95,7 @@ $forumPosts = [
                     <span class="w-[20px] h-[20px] mr-2">{!! $icons['Plus'] !!}</span> Post an Item
                 </button>
                 <button class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-full font-semibold hover:bg-white/10">
-                    Browse Items
+                    <a href="/items" >Browse Items</a>
                 </button>
             </div>
         </div>
@@ -195,7 +198,7 @@ $forumPosts = [
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
                         <span class="text-green-400 w-[28px] h-[28px]">{!! $icons['Leaf'] !!}</span>
-                        <h4 class="text-xl font-bold">Tell-U Loots</h4>
+                        <h4 class="text-xl font-bold">Tel-U Loots</h4>
                     </div>
                     <p class="text-gray-400">
                         A sustainable second-hand marketplace for Telkom University students. Supporting SDG 12.
@@ -232,7 +235,7 @@ $forumPosts = [
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-                <p>© 2025 Tell-U Loots — Group 7, Telkom University. Built with ❤️ for sustainability.</p>
+                <p>© 2025 Tel-U Loots — Group 7, Telkom University. Built with ❤️ for sustainability.</p>
             </div>
         </div>
     </footer>
