@@ -1,0 +1,4 @@
+If u haven't install the components yet pls install node.js first
+on terminal type npm install
+
+to run the project use npm start
