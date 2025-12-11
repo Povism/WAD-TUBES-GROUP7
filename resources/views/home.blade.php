@@ -9,11 +9,9 @@
 <body class="min-h-screen bg-gray-50">
 
 <?php
-// PHP equivalent of mock data (replace with actual database queries in a real app)
 
-$logo = asset('images/logo.png'); // Replace with your actual path
-$profile = asset('images/profile.jpg'); // Replace with your actual path
-// $heroBg = asset('assets/hero-bg.jpg'); // Not directly used in styling, but defined in original component
+$logo = asset('images/logo.png');
+$profile = asset('images/profile.jpg');
 
 $featuredItems = [
     [ 'id' => 1, 'title' => 'MacBook Air M1', 'price' => 'Rp 8.500.000', 'condition' => 'Used', 'category' => 'Electronics', 'eco' => true, 'img' => 'https://placehold.co/300x200/060771/white?text=MacBook' ],
@@ -22,7 +20,6 @@ $featuredItems = [
     [ 'id' => 4, 'title' => 'Winter Jacket', 'price' => 'Rp 200.000', 'condition' => 'New', 'category' => 'Clothing', 'eco' => true, 'img' => 'https://placehold.co/300x200/BF1A1A/white?text=Jacket' ],
 ];
 
-// PHP/SVG representation of Lucide icons (adjusted for size 24/20/16/14)
 $icons = [
     'BookOpen' => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
     'Monitor' => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-monitor"><path d="M10 12l2 2 4-4"/><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 0-1.6.8L10 8H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h16z"/></svg>',
