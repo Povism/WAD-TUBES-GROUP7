@@ -19,17 +19,19 @@ class RegisterController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'min:6', 'confirmed'],
+            'nim'=>['required','string', 'max:20'],
+            'password' => ['required', 'min:6', 'confirmed']
         ]);
         // ===============1==============
         // Save the validated user data into the database with hashed password and default role 'mahasiswa'.
         User::create([
             'name'=>$validated['name'],
+            'nim'=>$validated['nim'],
             'email'=>$validated['email'],
             'password'=>Hash::make($validated['password']),
             'role'=>'mahasiswa',
         ]);
 
-        return redirect('/login')->with('success', 'Registrasi berhasil, silakan login!');
+        return redirect('/login')->with('success', 'Registration successful, please login!');
     }
 }

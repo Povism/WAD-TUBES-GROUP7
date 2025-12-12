@@ -25,6 +25,18 @@ $icons = [
 ];
 ?>
 
+@if(session('error') || session('success'))
+    @php
+        $type = session('error') ? 'error' : 'success';
+        $message = session($type);
+        $alertColor = $type === 'error' ? 'bg-red-500' : 'bg-green-500';
+    @endphp
+
+    <div class="fixed top-5 right-5 z-50 p-4 rounded-lg text-white shadow-lg {{ $alertColor }}">
+        {{ $message }}
+    </div>
+@endif
+
 <div class="w-full max-w-md">
     <div class="bg-white/95 backdrop-blur-sm p-8 md:p-10 rounded-xl shadow-2xl border border-gray-100">
 
@@ -38,7 +50,7 @@ $icons = [
             <p class="text-gray-500 text-sm">Sign in to manage your listings and purchases.</p>
         </div>
 
-        <form method="POST" action="/login">
+        <form method="POST" action="{{ route('login') }}">
             @csrf
 
             <div class="mb-5">
@@ -51,12 +63,17 @@ $icons = [
                         type="email" 
                         name="email" 
                         id="email" 
+                        value="{{ old('email') }}"
                         placeholder="Your university email"
-                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800"
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800
+                                @error('email') border-red-500 @else border-gray-300 @enderror"
                         required 
                         autofocus
                     />
                 </div>
+                @error('email')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="mb-6">
@@ -70,10 +87,14 @@ $icons = [
                         name="password" 
                         id="password" 
                         placeholder="••••••••"
-                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800"
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800
+                                @error('password') border-red-500 @else border-gray-300 @enderror"
                         required
                     />
                 </div>
+                @error('password')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex items-center justify-between mb-6 text-sm">
@@ -94,7 +115,7 @@ $icons = [
         <div class="mt-6 text-center text-sm">
             <p class="text-gray-600">
                 Don't have an account? 
-                <a href="/register" class="font-bold text-red-600 hover:text-red-700 transition">
+                <a href="{{ route('register') }}" class="font-bold text-red-600 hover:text-red-700 transition">
                     Register Here
                 </a>
             </p>

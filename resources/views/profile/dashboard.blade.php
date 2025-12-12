@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tel-U Loot - User Profile Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen bg-gray-50">
+@extends('layouts.app')
 
+@section('title', 'Home - Tel-U Loot')
+
+@section('content')
 <?php
 // PHP equivalent of mock data for the User Profile Page
 
@@ -15,13 +10,9 @@ $logo = asset('images/logo.png');
 $profile = asset('images/profile.jpg');
 
 $user = [
-    'name' => 'Ria Setiawan',
-    'nim' => '13022130XX',
-    'major' => 'Informatika (IF)',
     'rating' => 4.7,
     'listings_active' => 3,
     'listings_sold' => 15,
-    'joined' => 'Aug 2023',
 ];
 
 $dashboardNav = [
@@ -54,38 +45,10 @@ $icons = [
 ?>
 
 <div>
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <img src="{{ $logo }}" alt="Logo" class="h-10 w-auto" />
-                <span class="text-2xl font-bold text-red-800">Tel-U Loot</span>
-            </div>
-
-            <div class="hidden md:flex items-center space-x-6">
-                <nav class="flex space-x-6">
-                    <a href="{{ url('/') }}" class="font-medium text-gray-700 hover:text-blue-700">Home</a>
-                    <a href="{{ url('/forum') }}" class="font-medium text-gray-700 hover:text-blue-700">Forum</a>
-                    <a href="{{ url('/items') }}" class="font-medium text-gray-700 hover:text-blue-700">Items</a>
-                </nav>
-            </div>
-
-            <div class="flex items-center space-x-4">
-                <button class="p-2 rounded-full hover:bg-gray-100 relative">
-                    <a href="{{ url('/cart') }}" class="text-gray-700 w-[25px] h-[25px]">{!! $icons['ShoppingCart'] !!}</a>
-                    <span class="absolute -top-1.5 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
-                </button>
-                <button class="p-2 rounded-full hover:bg-gray-100">
-                    <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['MessageCircle'] !!}</span>
-                </button>
-                <img src="{{ $profile }}" alt="Profile" class="w-8 h-8 rounded-full ring-2 ring-blue-500 ring-offset-2" />
-            </div>
-        </div>
-    </header>
-
     <section class="bg-gradient-to-r from-red-700 to-purple-500 text-white py-8">
         <div class="container mx-auto px-4">
             <h1 class="text-3xl font-bold">Seller Dashboard</h1>
-            <p class="text-lg opacity-90">Welcome back, {{ $user['name'] }}!</p>
+            <p class="text-lg opacity-90">Welcome back, {{ Auth::user()->name }}!</p>
         </div>
     </section>
 
@@ -96,8 +59,8 @@ $icons = [
 
                 <div class="bg-white p-6 rounded-xl shadow-md text-center">
                     <img src="{{ $profile }}" alt="Profile" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-blue-100" />
-                    <h3 class="text-xl font-bold text-gray-800">{{ $user['name'] }}</h3>
-                    <p class="text-sm text-gray-500">{{ $user['nim'] }} ({{ $user['major'] }})</p>
+                    <h3 class="text-xl font-bold text-gray-800">{{ Auth::user()->name }}</h3>
+                    <p class="text-sm text-gray-500">{{ Auth::user()->nim }}</p>
                     
                     <div class="flex items-center justify-center mt-3 text-yellow-500">
                         <span class="w-[20px] h-[20px] mr-1">{!! $icons['Star'] !!}</span>
@@ -105,7 +68,7 @@ $icons = [
                     </div>
 
                     <p class="text-xs text-gray-400 mt-2 flex items-center justify-center">
-                        <span class="w-[16px] h-[16px] mr-1">{!! $icons['Calendar'] !!}</span> Joined {{ $user['joined'] }}
+                        <span class="w-[16px] h-[16px] mr-1">{!! $icons['Calendar'] !!}</span> Joined {{ Auth::user()->created_at }}
                     </p>
                 </div>
 
@@ -127,7 +90,7 @@ $icons = [
                             {{ $navItem['name'] }}
                         </a>
                     @endforeach
-                    <a href="#" class="flex items-center p-3 rounded-lg font-medium transition text-red-500 hover:bg-red-50">
+                    <a href="{{ route('logout') }}" class="flex items-center p-3 rounded-lg font-medium transition text-red-500 hover:bg-red-50">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out mr-3"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
                         Logout
                     </a>
@@ -204,53 +167,7 @@ $icons = [
     </section>
 
 
-    <footer class="bg-gray-800 text-white py-10 mt-12">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <span class="text-green-400 w-[28px] h-[28px]">{!! $icons['Leaf'] !!}</span>
-                        <h4 class="text-xl font-bold">Tel-U Loots</h4>
-                    </div>
-                    <p class="text-gray-400">
-                        A sustainable second-hand marketplace for Telkom University students. Supporting SDG 12.
-                    </p>
-                </div>
-                <div>
-                    <h5 class="font-semibold mb-4">Navigation</h5>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="{{ url('/') }}" class="hover:text-white">Home</a></li>
-                        <li><a href="{{ url('/items') }}" class="hover:text-white">Items</a></li>
-                        <li><a href="{{ url('/forum') }}" class="hover:text-white">Forum</a></li>
-                        <li><a href="#" class="hover:text-white">My Profile</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h5 class="font-semibold mb-4">Contact</h5>
-                    <ul class="space-y-2 text-gray-400">
-                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['MapPin'] !!}</span> Telkom University, Bandung</li>
-                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['Mail'] !!}</span> telloots@telkomuniversity.ac.id</li>
-                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['Phone'] !!}</span> +62 22 1234 5678</li>
-                    </ul>
-                </div>
-                <div>
-                    <h5 class="font-semibold mb-4">Stay Updated</h5>
-                    <p class="text-gray-400 mb-2">Get notified about new listings and sustainability tips.</p>
-                    <div class="flex">
-                        <input
-                            type="email"
-                            placeholder="Your email"
-                            class="px-3 py-2 rounded-l w-full text-gray-800 text-sm"
-                        />
-                        <button class="bg-blue-600 px-3 rounded-r text-sm">Join</button>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-                <p>© 2025 Tel-U Loots — Group 7, Telkom University. Built with ❤️ for sustainability.</p>
-            </div>
-        </div>
-    </footer>
 </div>
 </body>
 </html>
+@endsection

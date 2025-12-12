@@ -32,12 +32,12 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             return redirect()->intended('/')->with('success', $remember 
-                ? 'Anda telah berhasil login dengan Remember Me aktif!' 
-                : 'Anda telah berhasil login!');
+                ? 'You have successfully logged in with Remember Me activated!' 
+                : 'You have successfully logged in!');
         }
 
         return back()->withErrors([
-            'email' => 'Email atau password salah!',
+            'email' => 'Email or password was wrong!',
         ]);
     }
 
@@ -48,6 +48,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('success', 'Anda telah berhasil logout!');
+        return redirect('/')->with('success', 'You have successfully logged out!');
     }
 }

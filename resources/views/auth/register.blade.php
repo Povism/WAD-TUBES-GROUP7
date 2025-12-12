@@ -39,7 +39,7 @@ $icons = [
             <p class="text-gray-500 text-sm">Find and sell items exclusively within the Telkom community.</p>
         </div>
 
-        <form method="POST" action="/register">
+        <form method="POST" action="{{ route('register') }}">
             @csrf
 
             <div class="mb-4">
@@ -51,12 +51,19 @@ $icons = [
                     <input 
                         type="text" 
                         name="name" 
+                        value="{{ old('name') }}"
                         id="name" 
                         placeholder="e.g., Ria Setiawan"
-                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800"
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800
+                                @error('name') is-invalid @enderror"
                         required 
                         autofocus
                     />
+                    @error('name')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                    @enderror
                 </div>
             </div>
 
@@ -70,10 +77,17 @@ $icons = [
                         type="text" 
                         name="nim" 
                         id="nim" 
+                        value="{{ old('nim') }}"
                         placeholder="e.g., 13022130XX"
-                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800"
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800
+                        @error('nim') is-invalid @enderror"
                         required
                     />
+                    @error('nim')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                        @enderror
                 </div>
             </div>
 
@@ -87,10 +101,17 @@ $icons = [
                         type="email" 
                         name="email" 
                         id="email" 
+                        value="{{ old('email') }}"
                         placeholder="e.g., name@student.telkomuniversity.ac.id"
-                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800"
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800
+                                @error('email') is-invalid @enderror"
                         required
                     />
+                        @error('password')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                        @enderror
                 </div>
             </div>
 
@@ -105,9 +126,15 @@ $icons = [
                         name="password" 
                         id="password" 
                         placeholder="••••••••"
-                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800"
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800
+                            @error('password') is-invalid @enderror"
                         required
                     />
+                    @error('password')
+                        <div class="invalid-feedback d-block">
+                            {{ $message }}
+                        </div>
+                    @enderror
                 </div>
             </div>
 
@@ -121,7 +148,7 @@ $icons = [
                         type="password" 
                         name="password_confirmation" 
                         id="password_confirmation" 
-                        placeholder="••••••••"
+                        placeholder="••••••••" 
                         class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 text-gray-800"
                         required
                     />
@@ -136,7 +163,7 @@ $icons = [
         <div class="mt-6 text-center text-sm">
             <p class="text-gray-600">
                 Already have an account?
-                <a href="/login" class="font-bold text-blue-600 hover:text-blue-700 transition">
+                <a href="{{ route('login') }}" class="font-bold text-red-600 hover:text-red-700 transition">
                     Log In Here
                 </a>
             </p>
