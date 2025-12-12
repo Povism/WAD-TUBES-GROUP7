@@ -77,7 +77,7 @@
                         
                         {{-- Profile Button --}}
                         <button class="p-2 rounded-full hover:bg-gray-100">
-                            <a href="profile">
+                            <a href="/profile">
                                 <img src="{{ $profile }}" alt="Profile" class="w-8 h-8 rounded-full" />
                             </a>
                         </button>

@@ -71,7 +71,7 @@ $statusColors = [
             </div>
 
             <div class="flex items-center space-x-4">
-                <span class="text-gray-700 text-sm font-medium">Admin: Jane Doe</span>
+                <span class="text-gray-700 text-sm font-medium">{{Auth::user()->name}}</span>
                 <img src="{{ $profile }}" alt="Profile" class="w-8 h-8 rounded-full ring-2 ring-red-500" />
                 <button class="p-2 rounded-full hover:bg-gray-100">
                     <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['LogOut'] !!}</span>
@@ -101,7 +101,7 @@ $statusColors = [
                     <a href="admin/items" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
                         <span class="mr-3 text-red-500">{!! $icons['Package'] !!}</span> Listings Management
                     </a>
-                    <a href="/admin/tags" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
+                    <a href="/admin/category" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
                         <span class="mr-3 text-green-500">{!! $icons['Tags'] !!}</span> Categories & Tags
                     </a>
                     </nav>

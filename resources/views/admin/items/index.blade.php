@@ -62,7 +62,7 @@ $statusColors = [
             </div>
 
             <div class="flex items-center space-x-4">
-                <span class="text-gray-700 text-sm font-medium">Admin: Jane Doe</span>
+                <span class="text-gray-700 text-sm font-medium">{{Auth::user()->name}}</span>
                 <img src="{{ $profile }}" alt="Profile" class="w-8 h-8 rounded-full ring-2 ring-red-500" />
                 <button class="p-2 rounded-full hover:bg-gray-100">
                     <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['LogOut'] ?? '' !!}</span>
@@ -181,7 +181,7 @@ $statusColors = [
         </div>
     </section>
 
-    <footer class="bg-gray-800 text-white py-10 mt-12">
+     <footer class="bg-gray-800 text-white py-10 mt-12">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
@@ -193,7 +193,35 @@ $statusColors = [
                         A sustainable second-hand marketplace for Telkom University students. Supporting SDG 12.
                     </p>
                 </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Navigation</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="{{ url('/') }}" class="hover:text-white">Home</a></li>
+                        <li><a href="{{ url('/items') }}" class="hover:text-white">Items</a></li>
+                        <li><a href="{{ url('/profile') }}" class="hover:text-white">My Profile</a></li>
+                    </ul>
                 </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Contact</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['MapPin'] ?? '' !!}</span> Telkom University, Bandung</li>
+                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['Mail'] ?? '' !!}</span> telloots@telkomuniversity.ac.id</li>
+                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['Phone'] ?? '' !!}</span> +62 22 1234 5678</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Stay Updated</h5>
+                    <p class="text-gray-400 mb-2">Get notified about new listings and sustainability tips.</p>
+                    <div class="flex">
+                        <input
+                            type="email"
+                            placeholder="Your email"
+                            class="px-3 py-2 rounded-l w-full text-gray-800 text-sm"
+                        />
+                        <button class="bg-blue-600 px-3 rounded-r text-sm">Join</button>
+                    </div>
+                </div>
+            </div>
             <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
                 <p>© 2025 Tel-U Loots — Group 7, Telkom University. Built with ❤️ for sustainability.</p>
             </div>

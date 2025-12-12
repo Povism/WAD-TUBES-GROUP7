@@ -36,8 +36,6 @@ $categories = [
     ['id' => 5, 'name' => 'Services', 'slug' => 'services', 'listings' => 45, 'is_main' => false],
 ];
 
-// Mock Data for Popular Tags
-$tags = ['#telkom-sale', '#discount', '#m3-laptop', '#used-book', '#kost-must-have', '#ready-to-negotiate'];
 ?>
 
 <div>
@@ -47,9 +45,15 @@ $tags = ['#telkom-sale', '#discount', '#m3-laptop', '#used-book', '#kost-must-ha
                 <img src="{{ $logo }}" alt="Logo" class="h-10 w-auto" />
                 <span class="text-2xl font-bold text-red-800">Tel-U Loot</span>
             </div>
+
+            <div class="hidden md:flex items-center space-x-6">
+                <nav class="flex space-x-6">
+                    <a href="{{ url('/') }}" class="font-medium text-gray-700 hover:text-blue-700">Go to Marketplace</a>
+                </nav>
+            </div>
             
             <div class="flex items-center space-x-4">
-                <span class="text-gray-700 text-sm font-medium">Admin: Jane Doe</span>
+                <span class="text-gray-700 text-sm font-medium">{{Auth::user()->name}}</span>
                 <img src="{{ $profile }}" alt="Profile" class="w-8 h-8 rounded-full ring-2 ring-red-500" />
                 <button class="p-2 rounded-full hover:bg-gray-100">
                     <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['LogOut'] ?? '' !!}</span>
@@ -129,38 +133,54 @@ $tags = ['#telkom-sale', '#discount', '#m3-laptop', '#used-book', '#kost-must-ha
                         </table>
                     </div>
                 </div>
-
-                <div class="bg-white rounded-xl shadow-md p-6">
-                    <div class="flex justify-between items-center mb-4 border-b pb-3">
-                        <h2 class="text-xl font-bold text-gray-800">Popular User Tags</h2>
-                        <button class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition flex items-center">
-                            {!! $icons['Plus'] !!} <span class="ml-1">Manually Add Tag</span>
-                        </button>
-                    </div>
-
-                    <p class="text-sm text-gray-600 mb-4">Tags are mostly user-generated. Manage the most popular ones here.</p>
-
-                    <div class="flex flex-wrap gap-3">
-                        @foreach ($tags as $tag)
-                            <div class="flex items-center bg-gray-100 text-gray-800 text-sm font-medium px-3 py-1 rounded-full border border-gray-300">
-                                <span class="mr-2">{!! $tag !!}</span>
-                                <button class="text-red-500 hover:text-red-700 ml-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                                </button>
-                            </div>
-                        @endforeach
-                    </div>
-                    
-                    <button class="mt-6 text-sm text-blue-600 hover:underline">View all 120 user-generated tags...</button>
                 </div>
                 
             </div>
         </div>
     </section>
 
-    <footer class="bg-gray-800 text-white py-10 mt-12">
+     <footer class="bg-gray-800 text-white py-10 mt-12">
         <div class="container mx-auto px-4">
-            <div class="border-t border-gray-700 pt-6 text-center text-gray-400">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-green-400 w-[28px] h-[28px]">{!! $icons['Leaf'] !!}</span>
+                        <h4 class="text-xl font-bold">Tel-U Loots</h4>
+                    </div>
+                    <p class="text-gray-400">
+                        A sustainable second-hand marketplace for Telkom University students. Supporting SDG 12.
+                    </p>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Navigation</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="{{ url('/') }}" class="hover:text-white">Home</a></li>
+                        <li><a href="{{ url('/items') }}" class="hover:text-white">Items</a></li>
+                        <li><a href="{{ url('/profile') }}" class="hover:text-white">My Profile</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Contact</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['MapPin'] ?? '' !!}</span> Telkom University, Bandung</li>
+                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['Mail'] ?? '' !!}</span> telloots@telkomuniversity.ac.id</li>
+                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['Phone'] ?? '' !!}</span> +62 22 1234 5678</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Stay Updated</h5>
+                    <p class="text-gray-400 mb-2">Get notified about new listings and sustainability tips.</p>
+                    <div class="flex">
+                        <input
+                            type="email"
+                            placeholder="Your email"
+                            class="px-3 py-2 rounded-l w-full text-gray-800 text-sm"
+                        />
+                        <button class="bg-blue-600 px-3 rounded-r text-sm">Join</button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
                 <p>© 2025 Tel-U Loots — Group 7, Telkom University. Built with ❤️ for sustainability.</p>
             </div>
         </div>

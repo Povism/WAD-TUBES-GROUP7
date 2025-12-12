@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tel-U Loot - Community Forum</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen bg-gray-50">
+@extends('layouts.app')
 
+@section('title', 'Home - Tel-U Loot')
+
+@section('content')
 <?php
 // PHP equivalent of mock data for the Forum Page
 
@@ -46,35 +41,6 @@ $icons = [
 ?>
 
 <div>
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <img src="{{ $logo }}" alt="Logo" class="h-10 w-auto" />
-                <span class="text-2xl font-bold text-red-800">Tel-U Loot</span>
-            </div>
-
-            <div class="hidden md:flex items-center space-x-6">
-                <nav class="flex space-x-6">
-                    <a href="{{ url('/') }}" class="font-medium text-gray-700 hover:text-blue-700">Home</a>
-                    <a href="#" class="font-medium text-blue-700 border-b-2 border-blue-700 pb-1">Forum</a>
-                    <a href="{{ url('/items') }}" class="font-medium text-gray-700 hover:text-blue-700">Items</a>
-                </nav>
-            </div>
-
-            <div class="flex items-center space-x-4">
-                <button class="p-2 rounded-full hover:bg-gray-100 relative">
-                    <a href="/cart" class="text-gray-700 w-[25px] h-[25px]">{!! $icons['ShoppingCart'] !!}</a>
-                    <span class="absolute -top-1.5 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
-                </button>
-                <button class="p-2 rounded-full hover:bg-gray-100">
-                    <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['MessageCircle'] !!}</span>
-                </button>
-                <a href="profile">
-                <img src="{{ $profile }}" alt="Profile" class="w-8 h-8 rounded-full" /></a>
-                </button>
-            </div>
-        </div>
-    </header>
 
     <section class="bg-gradient-to-r from-red-700 to-purple-500 text-white py-12">
         <div class="container mx-auto px-4 text-center">
@@ -141,54 +107,7 @@ $icons = [
         </div>
     </section>
 
-
-    <footer class="bg-gray-800 text-white py-10 mt-12">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <span class="text-green-400 w-[28px] h-[28px]">{!! $icons['Leaf'] !!}</span>
-                        <h4 class="text-xl font-bold">Tel-U Loots</h4>
-                    </div>
-                    <p class="text-gray-400">
-                        A sustainable second-hand marketplace for Telkom University students. Supporting SDG 12.
-                    </p>
-                </div>
-                <div>
-                    <h5 class="font-semibold mb-4">Navigation</h5>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="{{ url('/') }}" class="hover:text-white">Home</a></li>
-                        <li><a href="{{ url('/') }}#items" class="hover:text-white">Items</a></li>
-                        <li><a href="#" class="hover:text-white">Forum</a></li>
-                        <li><a href="{{ url('/profile') }}" class="hover:text-white">My Profile</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h5 class="font-semibold mb-4">Contact</h5>
-                    <ul class="space-y-2 text-gray-400">
-                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['MapPin'] !!}</span> Telkom University, Bandung</li>
-                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['Mail'] !!}</span> telloots@telkomuniversity.ac.id</li>
-                        <li class="flex items-center"><span class="w-[16px] h-[16px] mr-2">{!! $icons['Phone'] !!}</span> +62 22 1234 5678</li>
-                    </ul>
-                </div>
-                <div>
-                    <h5 class="font-semibold mb-4">Stay Updated</h5>
-                    <p class="text-gray-400 mb-2">Get notified about new listings and sustainability tips.</p>
-                    <div class="flex">
-                        <input
-                            type="email"
-                            placeholder="Your email"
-                            class="px-3 py-2 rounded-l w-full text-gray-800 text-sm"
-                        />
-                        <button class="bg-blue-600 px-3 rounded-r text-sm">Join</button>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-                <p>© 2025 Tel-U Loots — Group 7, Telkom University. Built with ❤️ for sustainability.</p>
-            </div>
-        </div>
-    </footer>
 </div>
 </body>
 </html>
+@endsection
