@@ -11,7 +11,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        
+        // 💡 ADD THIS SECTION TO REGISTER YOUR CUSTOM MIDDLEWARE ALIASES
+        $middleware->alias([
+            'auth' => \App\Http\Middleware\Authenticate::class,
+            // Add other default aliases if they were here, e.g., 'guest'
+            
+            // This is the CRUCIAL line that maps 'role' to your class:
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+        ]);
+        
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
