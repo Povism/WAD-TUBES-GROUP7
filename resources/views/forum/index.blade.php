@@ -9,22 +9,6 @@
 $logo = asset('images/logo.png');
 $profile = asset('images/profile.jpg');
 
-// Forum Content Data
-$discussionThreads = [
-    [ 'id' => 1, 'title' => 'Where is the best place to find used textbooks for IF?', 'author' => 'andi_s', 'replies' => 21, 'views' => 450, 'time' => '1 hour ago', 'tags' => ['Books', 'Informatika', 'Tips'] ],
-    [ 'id' => 2, 'title' => 'Tips for selling a used monitor (Is the price fair?)', 'author' => 'tech_junkie', 'replies' => 8, 'views' => 180, 'time' => '3 hours ago', 'tags' => ['Electronics', 'Pricing'] ],
-    [ 'id' => 3, 'title' => 'What is the policy for large item exchange (e.g., mini-fridge)?', 'author' => 'newbie_l00t', 'replies' => 5, 'views' => 120, 'time' => '1 day ago', 'tags' => ['Rules', 'Furniture'] ],
-    [ 'id' => 4, 'title' => 'Selling unused practical work clothes, size M, good deal!', 'author' => 'fashion_eco', 'replies' => 15, 'views' => 310, 'time' => '1 day ago', 'tags' => ['Clothing'] ],
-    [ 'id' => 5, 'title' => 'Any groups focused on sustainable reuse ideas?', 'author' => 'eco_warrior', 'replies' => 12, 'views' => 250, 'time' => '2 days ago', 'tags' => ['General', 'Sustainability'] ],
-];
-
-$popularTopics = [
-    ['name' => 'Textbook Exchange (45)', 'slug' => 'textbooks'],
-    ['name' => 'Laptop/PC Components (32)', 'slug' => 'electronics'],
-    ['name' => 'Dorm Furniture (28)', 'slug' => 'furniture'],
-    ['name' => 'Campus Rules (15)', 'slug' => 'rules'],
-];
-
 // PHP/SVG representation of Lucide icons (adjusted for size)
 $icons = [
     'ShoppingCart' => '<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h1.9l2.7 13.9c.1 0 .2 0 .3 0h11.8c.2 0 .4-.1.5-.2l4-8c.1-.2.1-.4 0-.6-.1-.2-.3-.3-.5-.3H6.85"/></svg>',
@@ -37,11 +21,9 @@ $icons = [
     'MessageSquare' => '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
     'Eye' => '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"/><circle cx="12" cy="12" r="3"/></svg>',
 ];
-
 ?>
 
 <div>
-
     <section class="bg-gradient-to-r from-red-700 to-purple-500 text-white py-12">
         <div class="container mx-auto px-4 text-center">
             <h1 class="text-3xl md:text-4xl font-bold mb-2">Community Discussions</h1>
@@ -55,20 +37,11 @@ $icons = [
             <div class="lg:col-span-1 space-y-6">
                 <div class="bg-white p-6 rounded-xl shadow-md">
                     <h4 class="font-bold text-lg mb-4 text-blue-800">Start a Discussion</h4>
-                    <a href="forum/create" class="w-full flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
-                        <span class="w-[20px] h-[20px] mr-2">{!! $icons['Plus'] !!}</span> New Thread
+                    <a href="{{ route('forum.create') }}"
+                       class="w-full flex items-center justify-center bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+                        <span class="w-[20px] h-[20px] mr-2">{!! $icons['Plus'] !!}</span>
+                        New Thread
                     </a>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <h4 class="font-bold text-lg mb-3">Popular Topics</h4>
-                    <ul class="space-y-2">
-                        @foreach ($popularTopics as $topic)
-                            <li>
-                                <a href="#" class="text-gray-700 hover:text-blue-600 transition">{{ $topic['name'] }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
                 </div>
             </div>
 
@@ -76,38 +49,53 @@ $icons = [
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold">Latest Threads</h3>
                     <div class="relative w-1/2 max-w-sm">
-                        <input type="text" placeholder="Search discussions..." class="w-full p-2 pl-10 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
-                        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input type="text"
+                               placeholder="Search discussions..."
+                               class="w-full p-2 pl-10 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+                        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                             xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.3-4.3"/>
+                        </svg>
                     </div>
                 </div>
 
                 <div class="bg-white rounded-xl shadow divide-y">
-                    @foreach ($discussionThreads as $thread)
-                        <div class="p-5 hover:bg-gray-50 cursor-pointer transition">
-                            <h4 class="font-semibold text-blue-800 mb-1">{{ $thread['title'] }}</h4>
+                    @foreach ($forums as $thread)
+                        <a href="{{ route('forum.show', $thread) }}"
+                           class="block p-5 hover:bg-gray-50 cursor-pointer transition">
+
+                            <h4 class="font-semibold text-blue-800 mb-1">{{ $thread->title }}</h4>
+
                             <div class="flex flex-wrap items-center text-sm text-gray-500">
-                                <span class="mr-3">by **{{ $thread['author'] }}**</span>
-                                <span class="mr-3 flex items-center">
-                                    <span class="w-[18px] h-[18px] mr-1 text-green-600">{!! $icons['MessageSquare'] !!}</span> {{ $thread['replies'] }} replies
+                                <span class="mr-3">
+                                    By {{ $thread->user ? $thread->user->name : 'Anonymous' }}
                                 </span>
+
                                 <span class="mr-3 flex items-center">
-                                    <span class="w-[18px] h-[18px] mr-1 text-purple-600">{!! $icons['Eye'] !!}</span> {{ $thread['views'] }} views
+                                    <span class="w-[18px] h-[18px] mr-1 text-green-600">
+                                        {!! $icons['MessageSquare'] !!}
+                                    </span>
+                                    {{ $thread->comments_count }} replies 
                                 </span>
-                                <span>• {{ $thread['time'] }}</span>
+
+                                <span>• {{ $thread->created_at->diffForHumans() }}</span>
                             </div>
+
                             <div class="mt-2 space-x-2">
-                                @foreach ($thread['tags'] as $tag)
-                                    <span class="inline-block bg-blue-100 text-blue-600 text-xs font-medium px-3 py-1 rounded-full">{{ $tag }}</span>
-                                @endforeach
+                                <span class="inline-block bg-gray-100 text-gray-600 text-xs font-medium px-3 py-1 rounded-full">
+                                    General
+                                </span>
                             </div>
-                        </div>
+                        </a>
                     @endforeach
                 </div>
+
             </div>
         </div>
     </section>
-
 </div>
-</body>
-</html>
+
 @endsection
