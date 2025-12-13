@@ -22,8 +22,7 @@ class RegisterController extends Controller
             'nim'=>['required','string', 'max:20'],
             'password' => ['required', 'min:6', 'confirmed']
         ]);
-        // ===============1==============
-        // Save the validated user data into the database with hashed password and default role 'mahasiswa'.
+        
         User::create([
             'name'=>$validated['name'],
             'nim'=>$validated['nim'],
