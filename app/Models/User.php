@@ -17,12 +17,16 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
+    protected $table = 'users';
+
+    
     protected $fillable = [
         'name',
         'email',
-        'nim',
         'password',
-    ];
+        'role',
+    ];    
 
     /**
      * The attributes that should be hidden for serialization.
@@ -45,5 +49,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function products()
+    {
+        return $this->hasMany(\App\Models\Product::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(\App\Models\Review::class);
     }
 }
