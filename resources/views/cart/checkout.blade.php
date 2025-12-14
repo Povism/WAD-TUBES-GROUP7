@@ -138,9 +138,26 @@ $icons = [
                         <span class="text-2xl font-bold text-green-600">{{ $rupiahFormat($total) }}</span>
                     </div>
 
-                    <button class="w-full bg-green-600 text-white text-lg font-semibold py-3 rounded-xl hover:bg-green-700 transition shadow-md">
-                        Proceed to Payment
-                    </button>
+                    @auth
+                    <form action="{{ route('orders.store') }}" method="POST">
+                        @csrf
+                        @foreach($cartItems as $item)
+                            <input type="hidden" name="items[{{ $loop->index }}][item_id]" value="{{ $item['id'] }}">
+                            <input type="hidden" name="items[{{ $loop->index }}][quantity]" value="{{ $item['qty'] }}">
+                            <input type="hidden" name="items[{{ $loop->index }}][price]" value="{{ $item['price'] }}">
+                        @endforeach
+                        <input type="hidden" name="shipping_name" value="{{ Auth::user()->name }}">
+                        <input type="hidden" name="shipping_address" value="Dormitory 1, Room B-302, Telkom University, Jl. Telekomunikasi No.1, Bandung, 40257">
+                        <input type="hidden" name="shipping_phone" value="">
+                        <button type="submit" class="w-full bg-green-600 text-white text-lg font-semibold py-3 rounded-xl hover:bg-green-700 transition shadow-md">
+                            Place Order
+                        </button>
+                    </form>
+                    @else
+                    <a href="{{ route('login') }}" class="w-full bg-green-600 text-white text-lg font-semibold py-3 rounded-xl hover:bg-green-700 transition shadow-md block text-center">
+                        Login to Place Order
+                    </a>
+                    @endauth
                     
                     <p class="text-center text-xs text-gray-400 mt-4">By proceeding, you agree to Tel-U Loot's terms & conditions.</p>
                 </div>
