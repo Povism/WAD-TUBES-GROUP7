@@ -14,7 +14,7 @@ return new class extends Migration
         // ===============1==============
         // Add 'role' column to 'users' table with enum type having values 'admin' and 'mahasiswa', default 'mahasiswa'.
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['admin', 'student'])->default('student');
+            $table->enum('role', ['admin', 'mahasiswa'])->default('mahasiswa');
         });
     }
 

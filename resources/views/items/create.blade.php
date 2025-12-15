@@ -30,7 +30,8 @@ $icons = [
                 Fill out the details below to contribute to Tel-U's sustainable marketplace.
             </p>
 
-            <form action="/items" method="POST" enctype="multipart/form-data" class="bg-white p-8 md:p-10 rounded-xl shadow-lg space-y-6">
+            <form action="{{ route('items.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-8 md:p-10 rounded-xl shadow-lg space-y-6">
+                @csrf
                 <div class="space-y-4 border-b pb-6">
                     <h2 class="text-xl font-semibold text-red-700">Item Details</h2>
                     

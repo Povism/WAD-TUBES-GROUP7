@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\Admin\ItemController as AdminItemController;
+use App\Models\Item;
+use App\Models\User;
 
 
 // fix the routes according to ur features these are just here for testing
@@ -16,15 +20,37 @@ Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->na
 Route::post('/register', [RegisterController::class, 'register']);
 
 // Home
-Route::get('/', function () { return view('home'); });
+Route::get('/', function () {
+    $featuredItems = Item::query()
+        ->where('status', 'active')
+        ->latest()
+        ->take(8)
+        ->get();
+
+    return view('home', compact('featuredItems'));
+})->name('home');
     
 // Admin
-Route::get('/admin', function () { return view('admin.index'); });
-Route::get('/admin/items', function () { return view('admin.items.index'); });
-Route::get('/admin/category', function () { return view('admin.category.index'); });
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', function () {
+        $totalUsers = User::query()->count();
+        $activeListings = Item::query()->where('status', 'active')->count();
+        $categoryCount = Item::query()->whereNotNull('category')->distinct('category')->count('category');
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+        $recentListings = Item::query()
+            ->with('user')
+            ->latest()
+            ->take(10)
+            ->get();
 
+        return view('admin.index', compact('totalUsers', 'activeListings', 'categoryCount', 'recentListings'));
+    })->name('index');
+    Route::get('/category', function () { return view('admin.category.index'); })->name('category.index');
+
+    Route::get('/items', [AdminItemController::class, 'index'])->name('items.index');
+    Route::get('/items/{item}/edit', [AdminItemController::class, 'edit'])->name('items.edit');
+    Route::put('/items/{item}', [AdminItemController::class, 'update'])->name('items.update');
+    Route::delete('/items/{item}', [AdminItemController::class, 'destroy'])->name('items.destroy');
 });
 // Cart
 
@@ -40,10 +66,17 @@ Route::put('/forum/{forum}', function () { return view('forum.update'); });
 
 // Item Listing
 
-Route::get('/items', function () { return view('items.index' ); });
-Route::get('/items/create', function () { return view('items.create' ); });
-Route::get('/items/{item}', function ($id) { return view('items.show' ); });
-Route::put('/items/{item}', function ($id) { return view('items.update' ); });
+Route::get('/items', [ItemController::class, 'index'])->name('items.index');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
+    Route::post('/items', [ItemController::class, 'store'])->name('items.store');
+    Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
+    Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
+    Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+});
+
+Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
 
 
 // Profile
