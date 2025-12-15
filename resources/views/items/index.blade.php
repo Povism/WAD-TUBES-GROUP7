@@ -34,7 +34,21 @@ $icons = [
             <h1 class="text-3xl md:text-4xl font-bold mb-4 text-center">Find Your Next Sustainable Loot</h1>
             <div class="flex justify-center">
                 <div class="relative w-full max-w-2xl">
-                    <input type="search" placeholder="Search for books, gadgets, furniture, or clothes..." class="w-full p-4 pl-12 rounded-xl text-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg">
+                    <form method="GET" action="{{ route('items.index') }}" class="w-full">
+                        @if (request()->filled('category'))
+                            <input type="hidden" name="category" value="{{ request('category') }}" />
+                        @endif
+                        @foreach ((array) request('condition', []) as $c)
+                            <input type="hidden" name="condition[]" value="{{ $c }}" />
+                        @endforeach
+                        @if (request()->boolean('eco'))
+                            <input type="hidden" name="eco" value="1" />
+                        @endif
+                        @if (request()->filled('sort'))
+                            <input type="hidden" name="sort" value="{{ request('sort') }}" />
+                        @endif
+                        <input type="search" name="q" value="{{ request('q') }}" placeholder="Search for books, gadgets, furniture, or clothes..." class="w-full p-4 pl-12 rounded-xl text-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-lg">
+                    </form>
                     <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 </div>
             </div>
@@ -45,45 +59,72 @@ $icons = [
         <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-4 gap-8">
 
             <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <h4 class="font-bold text-lg mb-4 flex items-center text-blue-800">
-                        <span class="w-[20px] h-[20px] mr-2">{!! $icons['Filter'] !!}</span> Filter Listings
-                    </h4>
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
-                        <select class="w-full p-2 border border-gray-300 rounded-lg">
-                            <option>All Categories</option>
-                            <option>Electronics</option>
-                            <option>Books</option>
-                            <option>Furniture</option>
-                            <option>Clothing</option>
-                        </select>
-                    </div>
+                <form method="GET" action="{{ route('items.index') }}" class="space-y-6">
+                    @if (request()->filled('q'))
+                        <input type="hidden" name="q" value="{{ request('q') }}" />
+                    @endif
+                    @if (request()->filled('sort'))
+                        <input type="hidden" name="sort" value="{{ request('sort') }}" />
+                    @endif
 
-                    <div class="mb-4">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Condition</label>
-                        <div class="space-y-1">
-                            <label class="flex items-center text-sm"><input type="checkbox" class="mr-2 rounded text-blue-600"> New</label>
-                            <label class="flex items-center text-sm"><input type="checkbox" class="mr-2 rounded text-blue-600"> Used (Good)</label>
-                            <label class="flex items-center text-sm"><input type="checkbox" class="mr-2 rounded text-blue-600"> Used (Fair)</label>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h4 class="font-bold text-lg mb-4 flex items-center text-blue-800">
+                            <span class="w-[20px] h-[20px] mr-2">{!! $icons['Filter'] !!}</span> Filter Listings
+                        </h4>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+                            <select name="category" class="w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="">All Categories</option>
+                                <option value="Electronics" {{ request('category') === 'Electronics' ? 'selected' : '' }}>Electronics</option>
+                                <option value="Books" {{ request('category') === 'Books' ? 'selected' : '' }}>Books</option>
+                                <option value="Furniture" {{ request('category') === 'Furniture' ? 'selected' : '' }}>Furniture</option>
+                                <option value="Clothing" {{ request('category') === 'Clothing' ? 'selected' : '' }}>Clothing</option>
+                                <option value="Others" {{ request('category') === 'Others' ? 'selected' : '' }}>Others</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Condition</label>
+                            <div class="space-y-1">
+                                @php $selectedConditions = (array) request('condition', []); @endphp
+                                <label class="flex items-center text-sm">
+                                    <input type="checkbox" name="condition[]" value="New" class="mr-2 rounded text-blue-600" {{ in_array('New', $selectedConditions, true) ? 'checked' : '' }}>
+                                    New
+                                </label>
+                                <label class="flex items-center text-sm">
+                                    <input type="checkbox" name="condition[]" value="Good" class="mr-2 rounded text-blue-600" {{ in_array('Good', $selectedConditions, true) ? 'checked' : '' }}>
+                                    Good
+                                </label>
+                                <label class="flex items-center text-sm">
+                                    <input type="checkbox" name="condition[]" value="Fair" class="mr-2 rounded text-blue-600" {{ in_array('Fair', $selectedConditions, true) ? 'checked' : '' }}>
+                                    Fair
+                                </label>
+                                <label class="flex items-center text-sm">
+                                    <input type="checkbox" name="condition[]" value="Like New" class="mr-2 rounded text-blue-600" {{ in_array('Like New', $selectedConditions, true) ? 'checked' : '' }}>
+                                    Like New
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t">
+                            <label class="flex items-center text-sm font-semibold text-green-700">
+                                <input type="checkbox" name="eco" value="1" class="mr-2 rounded text-green-600 focus:ring-green-500" {{ request()->boolean('eco') ? 'checked' : '' }}>
+                                Show Only Eco-Friendly
+                                <span class="w-[16px] h-[16px] ml-1 text-green-500">{!! $icons['Leaf'] !!}</span>
+                            </label>
                         </div>
                     </div>
 
-                    <div class="pt-4 border-t">
-                        <label class="flex items-center text-sm font-semibold text-green-700">
-                            <input type="checkbox" class="mr-2 rounded text-green-600 focus:ring-green-500">
-                            Show Only Eco-Friendly
-                            <span class="w-[16px] h-[16px] ml-1 text-green-500">{!! $icons['Leaf'] !!}</span>
-                        </label>
+                    <div class="flex items-center gap-2">
+                        <button type="submit" class="flex-1 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">
+                            Apply
+                        </button>
+                        <a href="{{ route('items.index') }}" class="flex-1 py-2 rounded-lg border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition text-center">
+                            Reset
+                        </a>
                     </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <h4 class="font-bold text-lg mb-4">Price Range</h4>
-                    <input type="range" min="10000" max="10000000" value="5000000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                    <p class="text-sm text-center mt-2 text-gray-600">Max: Rp 5.000.000</p>
-                </div>
+                </form>
 
             </div>
 
@@ -104,12 +145,26 @@ $icons = [
                             </a>
                         @endauth
 
-                        <select class="p-2 border border-gray-300 rounded-lg text-sm">
-                            <option>Sort by: Newest</option>
-                            <option>Sort by: Price (Low to High)</option>
-                            <option>Sort by: Price (High to Low)</option>
-                            <option>Sort by: Rating</option>
-                        </select>
+                        <form method="GET" action="{{ route('items.index') }}">
+                            @if (request()->filled('q'))
+                                <input type="hidden" name="q" value="{{ request('q') }}" />
+                            @endif
+                            @if (request()->filled('category'))
+                                <input type="hidden" name="category" value="{{ request('category') }}" />
+                            @endif
+                            @foreach ((array) request('condition', []) as $c)
+                                <input type="hidden" name="condition[]" value="{{ $c }}" />
+                            @endforeach
+                            @if (request()->boolean('eco'))
+                                <input type="hidden" name="eco" value="1" />
+                            @endif
+
+                            <select name="sort" class="p-2 border border-gray-300 rounded-lg text-sm" onchange="this.form.submit()">
+                                <option value="newest" {{ (request('sort', 'newest') === 'newest') ? 'selected' : '' }}>Sort by: Newest</option>
+                                <option value="price_asc" {{ request('sort') === 'price_asc' ? 'selected' : '' }}>Sort by: Price (Low to High)</option>
+                                <option value="price_desc" {{ request('sort') === 'price_desc' ? 'selected' : '' }}>Sort by: Price (High to Low)</option>
+                            </select>
+                        </form>
                     </div>
                 </div>
 
@@ -169,6 +224,7 @@ $icons = [
     </section>
 
 </div>
+
 </body>
 </html>
 @endsection

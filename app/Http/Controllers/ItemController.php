@@ -30,7 +30,29 @@ class ItemController extends Controller
             });
         }
 
-        $items = $query->latest()->paginate(12);
+        if ($request->filled('category')) {
+            $query->where('category', $request->string('category')->toString());
+        }
+
+        $conditions = $request->input('condition');
+        if (is_array($conditions) && count($conditions) > 0) {
+            $query->whereIn('condition', $conditions);
+        }
+
+        if ($request->boolean('eco')) {
+            $query->where('eco_friendly', true);
+        }
+
+        $sort = $request->string('sort')->toString();
+        if ($sort === 'price_asc') {
+            $query->orderBy('price', 'asc');
+        } elseif ($sort === 'price_desc') {
+            $query->orderBy('price', 'desc');
+        } else {
+            $query->latest();
+        }
+
+        $items = $query->paginate(12)->withQueryString();
 
         return view('items.index', compact('items'));
     }

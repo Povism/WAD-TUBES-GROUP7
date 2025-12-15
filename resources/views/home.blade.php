@@ -55,13 +55,13 @@
     <div class="bg-white py-3 shadow-sm">
         <div class="container mx-auto px-4 flex flex-wrap justify-center gap-6 text-center">
             <div>
-                <span class="font-bold text-green-600">124 kg</span> waste prevented
+                <span class="font-bold text-green-600">{{ number_format($wastePreventedKg ?? 0) }} kg</span> waste prevented
             </div>
             <div>
-                <span class="font-bold text-blue-600">542</span> items exchanged
+                <span class="font-bold text-blue-600">{{ number_format($itemsExchanged ?? 0) }}</span> items exchanged
             </div>
             <div>
-                <span class="font-bold text-purple-600">1,200+</span> students engaged
+                <span class="font-bold text-purple-600">{{ number_format($studentsEngaged ?? 0) }}</span> students engaged
             </div>
         </div>
     </div>
@@ -71,10 +71,10 @@
             <h3 class="text-2xl font-bold text-center mb-8">Browse by Category</h3>
             <div class="flex flex-wrap justify-center gap-6">
                 @foreach ($categories as $cat)
-                    <div class="flex flex-col items-center bg-white p-6 rounded-xl shadow hover:shadow-md transition cursor-pointer w-32">
+                    <a href="{{ route('items.index', ['category' => $cat['name']]) }}" class="flex flex-col items-center bg-white p-6 rounded-xl shadow hover:shadow-md transition cursor-pointer w-32">
                         <div class="text-blue-600 mb-2">{!! $cat['icon'] !!}</div>
                         <span class="font-medium">{{ $cat['name'] }}</span>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         </div>

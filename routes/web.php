@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\Admin\ItemController as AdminItemController;
 use App\Models\Item;
@@ -27,7 +28,11 @@ Route::get('/', function () {
         ->take(8)
         ->get();
 
-    return view('home', compact('featuredItems'));
+    $itemsExchanged = Item::query()->count();
+    $studentsEngaged = User::query()->count();
+    $wastePreventedKg = $itemsExchanged;
+
+    return view('home', compact('featuredItems', 'itemsExchanged', 'studentsEngaged', 'wastePreventedKg'));
 })->name('home');
     
 // Admin
@@ -54,7 +59,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 });
 // Cart
 
-Route::get('/cart', function () { return view('cart.checkout'); });
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{item}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/items/{cartItem}/delta', [CartController::class, 'delta'])->name('cart.items.delta');
+    Route::delete('/cart/items/{cartItem}', [CartController::class, 'remove'])->name('cart.items.remove');
+});
 
 // Forum
 

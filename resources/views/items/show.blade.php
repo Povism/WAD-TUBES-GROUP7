@@ -131,9 +131,18 @@ $icons = [
                             <span class="text-md font-semibold text-gray-800">Seller: {{ $selectedItem['seller_name'] }}</span>
                         </div>
 
-                        <button class="w-full py-3 bg-blue-600 text-white font-bold text-lg rounded-xl hover:bg-blue-700 transition flex items-center justify-center shadow-lg">
-                            <span class="w-[24px] h-[24px] mr-2">{!! $icons['ShoppingCart'] !!}</span> Add to Cart
-                        </button>
+                        @auth
+                            <form action="{{ route('cart.add', $item) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold text-lg rounded-xl hover:bg-blue-700 transition flex items-center justify-center shadow-lg">
+                                    <span class="w-[24px] h-[24px] mr-2">{!! $icons['ShoppingCart'] !!}</span> Add to Cart
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="w-full py-3 bg-blue-600 text-white font-bold text-lg rounded-xl hover:bg-blue-700 transition flex items-center justify-center shadow-lg">
+                                <span class="w-[24px] h-[24px] mr-2">{!! $icons['ShoppingCart'] !!}</span> Add to Cart
+                            </a>
+                        @endauth
                         
                         <button class="w-full py-3 bg-green-500 text-white font-bold text-lg rounded-xl hover:bg-green-600 transition flex items-center justify-center">
                             <span class="w-[24px] h-[24px] mr-2">{!! $icons['MessageCircle'] !!}</span> Message Seller
