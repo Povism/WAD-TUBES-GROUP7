@@ -10,16 +10,7 @@ $logo = asset('images/logo.png');
 $profile = asset('images/profile.jpg');
 
 // Item Content Data (More extensive list for a dedicated page)
-$itemListings = [
-    [ 'id' => 1, 'title' => 'MacBook Air M1 (2020)', 'price' => 'Rp 8.500.000', 'condition' => 'Used', 'category' => 'Electronics', 'eco' => true, 'img' => 'https://placehold.co/400x300/060771/white?text=MacBook+Air', 'seller' => 'andi_s', 'rating' => 4.8 ],
-    [ 'id' => 2, 'title' => 'Data Structures Textbook (Rinaldi Munir)', 'price' => 'Rp 75.000', 'condition' => 'Good', 'category' => 'Books', 'eco' => true, 'img' => 'https://placehold.co/400x300/7132CA/white?text=Textbook', 'seller' => 'bookworm', 'rating' => 5.0 ],
-    [ 'id' => 3, 'title' => 'Ergonomic Office Chair (Black)', 'price' => 'Rp 450.000', 'condition' => 'Used', 'category' => 'Furniture', 'eco' => false, 'img' => 'https://placehold.co/400x300/DE1A58/white?text=Office+Chair', 'seller' => 'dorm_clear', 'rating' => 4.2 ],
-    [ 'id' => 4, 'title' => 'Warm Winter Jacket (Size L)', 'price' => 'Rp 200.000', 'condition' => 'New', 'category' => 'Clothing', 'eco' => true, 'img' => 'https://placehold.co/400x300/BF1A1A/white?text=Jacket', 'seller' => 'fashion_eco', 'rating' => 4.9 ],
-    [ 'id' => 5, 'title' => 'Portable Electric Fan', 'price' => 'Rp 50.000', 'condition' => 'Used', 'category' => 'Electronics', 'eco' => true, 'img' => 'https://placehold.co/400x300/00A9E0/white?text=Fan', 'seller' => 'hot_student', 'rating' => 4.5 ],
-    [ 'id' => 6, 'title' => 'Python Programming Handbook', 'price' => 'Rp 30.000', 'condition' => 'Fair', 'category' => 'Books', 'eco' => true, 'img' => 'https://placehold.co/400x300/4CAF50/white?text=Python', 'seller' => 'code_guy', 'rating' => 4.0 ],
-    [ 'id' => 7, 'title' => 'Mini Desk Lamp', 'price' => 'Rp 65.000', 'condition' => 'New', 'category' => 'Furniture', 'eco' => false, 'img' => 'https://placehold.co/400x300/FFC107/black?text=Desk+Lamp', 'seller' => 'light_up', 'rating' => 4.7 ],
-    [ 'id' => 8, 'title' => 'Soccer Jersey (Size M)', 'price' => 'Rp 150.000', 'condition' => 'Used', 'category' => 'Clothing', 'eco' => false, 'img' => 'https://placehold.co/400x300/9C27B0/white?text=Jersey', 'seller' => 'sporty_kid', 'rating' => 4.6 ],
-];
+$items = $items ?? collect();
 
 // PHP/SVG representation of Lucide icons (adjusted for size)
 $icons = [
@@ -98,39 +89,81 @@ $icons = [
 
             <div class="lg:col-span-3">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-semibold text-gray-700">Showing 8 of 42 Items</h3>
-                    <select class="p-2 border border-gray-300 rounded-lg text-sm">
-                        <option>Sort by: Newest</option>
-                        <option>Sort by: Price (Low to High)</option>
-                        <option>Sort by: Price (High to Low)</option>
-                        <option>Sort by: Rating</option>
-                    </select>
+                    <h3 class="text-xl font-semibold text-gray-700">
+                        Showing {{ method_exists($items, 'count') ? $items->count() : 0 }}
+                        of {{ method_exists($items, 'total') ? $items->total() : (method_exists($items, 'count') ? $items->count() : 0) }} Items
+                    </h3>
+                    <div class="flex items-center gap-3">
+                        @auth
+                            <a href="{{ route('items.create') }}" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
+                                Post Item
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
+                                Post Item
+                            </a>
+                        @endauth
+
+                        <select class="p-2 border border-gray-300 rounded-lg text-sm">
+                            <option>Sort by: Newest</option>
+                            <option>Sort by: Price (Low to High)</option>
+                            <option>Sort by: Price (High to Low)</option>
+                            <option>Sort by: Rating</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                   @foreach ($itemListings as $item)
+                    @foreach ($items as $item)
                         <div class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden relative">
+                            @php
+                                $thumb = (is_array($item->images) && count($item->images) > 0)
+                                    ? asset('storage/' . $item->images[0])
+                                    : 'https://placehold.co/600x400/060771/white?text=Item+Image';
+                            @endphp
+                            <a href="{{ route('items.show', $item) }}" class="block">
+                                <img src="{{ $thumb }}" alt="{{ $item->title }}" class="w-full h-40 object-cover" loading="lazy" />
+                            </a>
                             <div class="p-4">
-                                <a href="{{ url('/items/' . $item['id']) }}" class="font-semibold text-lg text-gray-800 line-clamp-2 hover:text-blue-700 transition">
-                                    {{ $item['title'] }}
+                                <a href="{{ route('items.show', $item) }}" class="font-semibold text-lg text-gray-800 line-clamp-2 hover:text-blue-700 transition">
+                                    {{ $item->title }}
                                 </a>
-                                
-                                <p class="text-green-600 font-bold text-xl mt-1">{{ $item['price'] }}</p>
-                                </div>
+                                <p class="text-sm text-gray-500 mt-1">{{ $item->condition }} • {{ $item->category }}</p>
+                                <p class="text-green-600 font-bold text-xl mt-1">Rp {{ number_format($item->price, 0, ',', '.') }}</p>
+
+                                @auth
+                                    @if (auth()->id() === $item->user_id || auth()->user()->role === 'admin')
+                                        <div class="mt-3 flex items-center gap-2">
+                                            <a href="{{ route('items.edit', $item) }}" class="px-3 py-1 text-xs font-semibold rounded-lg border border-blue-200 text-blue-700 hover:bg-blue-50">
+                                                Edit
+                                            </a>
+                                            <form action="{{ route('items.destroy', $item) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" onclick="return confirm('Delete this item?')" class="px-3 py-1 text-xs font-semibold rounded-lg border border-red-200 text-red-700 hover:bg-red-50">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
+                                @endauth
+
+                                @if ($item->eco_friendly)
+                                    <div class="mt-2 inline-flex items-center text-xs font-semibold bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                                        <span class="w-[16px] h-[16px] mr-1">{!! $icons['Leaf'] !!}</span>
+                                        Eco-Friendly
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     @endforeach
                 </div>
 
-                <div class="mt-8 flex justify-center">
-                    <nav class="flex space-x-2">
-                        <a href="#" class="px-3 py-2 text-gray-500 bg-white rounded-lg hover:bg-gray-100">Previous</a>
-                        <a href="#" class="px-3 py-2 text-white bg-blue-600 rounded-lg">1</a>
-                        <a href="#" class="px-3 py-2 text-gray-700 bg-white rounded-lg hover:bg-gray-100">2</a>
-                        <a href="#" class="px-3 py-2 text-gray-700 bg-white rounded-lg hover:bg-gray-100">3</a>
-                        <a href="#" class="px-3 py-2 text-gray-500 bg-white rounded-lg hover:bg-gray-100">Next</a>
-                    </nav>
-                </div>
-
+                @if (method_exists($items, 'links'))
+                    <div class="mt-8 flex justify-center">
+                        {{ $items->links() }}
+                    </div>
+                @endif
             </div>
         </div>
     </section>
