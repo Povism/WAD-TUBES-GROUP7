@@ -16,16 +16,9 @@ $profile = asset('images/profile.jpg');
 
 // REVISED: Removed 'Pending Reviews' and 'New Discussions'
 $adminStats = [
-    ['title' => 'Total Users', 'value' => '4,521', 'icon' => 'Users', 'color' => 'blue'],
-    ['title' => 'Active Listings', 'value' => '689', 'icon' => 'Package', 'color' => 'green'],
-    ['title' => 'Categories & Tags', 'value' => '45', 'icon' => 'Tags', 'color' => 'purple'], // Changed from Discussions
-];
-
-$recentListings = [
-    ['id' => 101, 'title' => 'Gaming Keyboard (Razer)', 'seller' => 'tech_noob', 'category' => 'Electronics', 'status' => 'Pending'],
-    ['id' => 102, 'title' => 'Business Law Textbook', 'seller' => 'book_seller', 'category' => 'Books', 'status' => 'Active'],
-    ['id' => 103, 'title' => 'Used Dorm Bed Sheet', 'seller' => 'dorm_clear', 'category' => 'Clothing', 'status' => 'Rejected'],
-    ['id' => 104, 'title' => 'Desk Organizer', 'seller' => 'student_helper', 'category' => 'Furniture', 'status' => 'Pending'],
+    ['title' => 'Total Users', 'value' => number_format($totalUsers ?? 0), 'icon' => 'Users', 'color' => 'blue'],
+    ['title' => 'Active Listings', 'value' => number_format($activeListings ?? 0), 'icon' => 'Package', 'color' => 'green'],
+    ['title' => 'Categories & Tags', 'value' => number_format($categoryCount ?? 0), 'icon' => 'Tags', 'color' => 'purple'], // Changed from Discussions
 ];
 
 // PHP/SVG representation of Lucide icons
@@ -50,9 +43,10 @@ $colorClasses = [
 ];
 
 $statusColors = [
-    'Active' => 'bg-green-100 text-green-800',
-    'Pending' => 'bg-yellow-100 text-yellow-800',
-    'Rejected' => 'bg-red-100 text-red-800',
+    'active' => 'bg-green-100 text-green-800',
+    'pending' => 'bg-yellow-100 text-yellow-800',
+    'rejected' => 'bg-red-100 text-red-800',
+    'sold' => 'bg-gray-200 text-gray-800',
 ];
 ?>
 
@@ -73,9 +67,12 @@ $statusColors = [
             <div class="flex items-center space-x-4">
                 <span class="text-gray-700 text-sm font-medium">{{Auth::user()->name}}</span>
                 <img src="{{ $profile }}" alt="Profile" class="w-8 h-8 rounded-full ring-2 ring-red-500" />
-                <button class="p-2 rounded-full hover:bg-gray-100">
-                    <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['LogOut'] !!}</span>
-                </button>
+                <form action="{{ route('logout') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" class="p-2 rounded-full hover:bg-gray-100" title="Log Out">
+                        <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['LogOut'] !!}</span>
+                    </button>
+                </form>
             </div>
         </div>
     </header>
@@ -98,7 +95,7 @@ $statusColors = [
                     <a href="#" class="flex items-center p-3 rounded-lg bg-blue-100 text-blue-700 font-medium transition mb-1">
                         <span class="mr-3">{!! $icons['LayoutDashboard'] !!}</span> Dashboard Overview
                     </a>
-                    <a href="admin/items" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
+                    <a href="{{ route('admin.items.index') }}" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
                         <span class="mr-3 text-red-500">{!! $icons['Package'] !!}</span> Listings Management
                     </a>
                     <a href="/admin/category" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
@@ -143,19 +140,22 @@ $statusColors = [
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach ($recentListings as $listing)
+                                @foreach (($recentListings ?? collect()) as $listing)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{{ $listing['id'] }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $listing['title'] }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $listing['seller'] }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{{ $listing->id }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $listing->title }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $listing->user?->name ?? 'Unknown' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColors[$listing['status']] }}">
-                                                {{ $listing['status'] }}
+                                            @php
+                                                $statusKey = $listing->status ?? 'pending';
+                                            @endphp
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColors[$statusKey] ?? 'bg-gray-200 text-gray-800' }}">
+                                                {{ ucfirst($statusKey) }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                            <a href="#" class="text-blue-600 hover:text-blue-900">View</a>
-                                            <a href="#" class="text-green-600 hover:text-green-900">Approve</a>
+                                            <a href="{{ route('items.show', $listing) }}" class="text-blue-600 hover:text-blue-900">View</a>
+                                            <a href="{{ route('admin.items.edit', $listing) }}" class="text-green-600 hover:text-green-900">Edit</a>
                                         </td>
                                     </tr>
                                 @endforeach

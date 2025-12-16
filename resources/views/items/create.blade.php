@@ -30,7 +30,8 @@ $icons = [
                 Fill out the details below to contribute to Tel-U's sustainable marketplace.
             </p>
 
-            <form action="/items" method="POST" enctype="multipart/form-data" class="bg-white p-8 md:p-10 rounded-xl shadow-lg space-y-6">
+            <form action="{{ route('items.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-8 md:p-10 rounded-xl shadow-lg space-y-6">
+                @csrf
                 <div class="space-y-4 border-b pb-6">
                     <h2 class="text-xl font-semibold text-red-700">Item Details</h2>
                     
@@ -106,6 +107,8 @@ $icons = [
                             <input id="dropzone-file" type="file" name="images[]" multiple class="hidden" accept="image/png, image/jpeg, image/jpg" />
                         </label>
                     </div>
+
+                    <div id="create-image-preview" class="flex flex-wrap gap-4"></div>
                 </div>
 
                 <div class="pt-6">
@@ -119,6 +122,40 @@ $icons = [
     </main>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const input = document.getElementById('dropzone-file');
+        const preview = document.getElementById('create-image-preview');
+
+        if (!input || !preview) return;
+
+        input.addEventListener('change', function () {
+            preview.innerHTML = '';
+
+            const files = Array.from(input.files || []).slice(0, 3);
+            files.forEach((file) => {
+                if (!file || !file.type || !file.type.startsWith('image/')) return;
+
+                const url = URL.createObjectURL(file);
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'relative w-24 h-24 rounded-lg overflow-hidden border border-gray-300';
+
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = 'Selected image preview';
+                img.className = 'w-full h-full object-cover';
+                img.onload = function () {
+                    URL.revokeObjectURL(url);
+                };
+
+                wrapper.appendChild(img);
+                preview.appendChild(wrapper);
+            });
+        });
+    });
+</script>
 </body>
 </html>
 @endsection
