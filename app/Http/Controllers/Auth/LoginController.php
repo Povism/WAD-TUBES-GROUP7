@@ -21,14 +21,12 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        // ===============1==============
-        // Validate the login form input for email and password.
         $credentials = $request->validate([
             'email'=>['required', 'email'],
             'password'=>['required'],
 
         ]);
-        // dd ($credentials);
+
         $remember = $request->has('remember');
 
         if (Auth::attempt($credentials, $remember)) {
