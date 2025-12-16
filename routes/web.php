@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\ForumController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\Admin\ItemController as AdminItemController;
@@ -67,12 +69,22 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Forum
+//Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
 
-Route::get('/forum', function () { return view('forum.index'); });
-Route::get('/forum/create', function () { return view('forum.create'); });
-Route::post('/forum/{forum}', function () { return view('forum.store'); });
-Route::get('/forum/{forum}', function ($id) { return view('forum.show' ); });
-Route::put('/forum/{forum}', function () { return view('forum.update'); });
+Route::middleware(['auth', 'role:student'])->group(function () {
+Route::get('/forum/create', [ForumController::class, 'create'])->name('forum.create');
+Route::post('/forum', [ForumController::class, 'store'])->name('forum.store');
+Route::get('/forum/{forum}/edit', [ForumController::class, 'edit'])->name('forum.edit');
+Route::put('/forum/{forum}', [ForumController::class, 'update'])->name('forum.update');
+Route::delete('/forum/{forum}', [ForumController::class, 'destroy'])->name('forum.destroy');
+
+//Comment Reply
+Route::post('/forum/{forum}/comments', [CommentController::class, 'store'])->name('comment.store');
+Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
+});
+
+Route::get('/forum/{forum}', [ForumController::class, 'show'])->name('forum.show');
 
 // Item Listing
 
@@ -93,13 +105,4 @@ Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show')
 
 Route::get('profile', function () { return view('profile.dashboard' ) ;});
 Route::get('profile/reviews', function () { return view('profile.reviews' ) ;});
-
-
-
-
-
-
-
-
-
 
