@@ -57,6 +57,9 @@
                         <a href="/" class="font-medium text-gray-700 hover:text-blue-700">Home</a>
                         <a href="/forum" class="font-medium text-gray-700 hover:text-blue-700">Forum</a>
                         <a href="/items" class="font-medium text-gray-700 hover:text-blue-700">Items</a>
+                        @auth
+                        <a href="{{ route('orders.index') }}" class="font-medium text-gray-700 hover:text-blue-700">My Orders</a>
+                        @endauth
                     </nav>
                 </div>
 

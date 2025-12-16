@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+// Added missing Order Controllers
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CartController;
@@ -10,6 +13,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\Admin\ItemController as AdminItemController;
 use App\Models\Item;
 use App\Models\User;
+use App\Models\Forum; // Use the Forum model import from the Base Code
 
 
 // fix the routes according to ur features these are just here for testing
@@ -22,22 +26,36 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 
-// Home
+// Home (Using the more complete logic from your Base Code)
 Route::get('/', function () {
+
     $featuredItems = Item::query()
         ->where('status', 'active')
         ->latest()
         ->take(8)
         ->get();
 
+    $threads = Forum::with('user')
+        ->withCount('comments')
+        ->orderBy('created_at', 'desc')
+        ->take(3)
+        ->get();
+        
     $itemsExchanged = Item::query()->count();
     $studentsEngaged = User::query()->count();
     $wastePreventedKg = $itemsExchanged;
 
-    return view('home', compact('featuredItems', 'itemsExchanged', 'studentsEngaged', 'wastePreventedKg'));
+    return view('home', compact(
+        'featuredItems', 
+        'threads', 
+        'itemsExchanged', 
+        'studentsEngaged', 
+        'wastePreventedKg'
+    ));
+    
 })->name('home');
     
-// Admin
+// Admin (Using the grouped, controller-based structure from your Base Code and Branch 'main')
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
         $totalUsers = User::query()->count();
@@ -54,13 +72,21 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     })->name('index');
     Route::get('/category', function () { return view('admin.category.index'); })->name('category.index');
 
+    // Admin Item Management
     Route::get('/items', [AdminItemController::class, 'index'])->name('items.index');
     Route::get('/items/{item}/edit', [AdminItemController::class, 'edit'])->name('items.edit');
     Route::put('/items/{item}', [AdminItemController::class, 'update'])->name('items.update');
     Route::delete('/items/{item}', [AdminItemController::class, 'destroy'])->name('items.destroy');
-});
-// Cart
 
+    // Admin Order Management (Added from conflict branch 'Aryan')
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::put('/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
+    Route::delete('/orders/{order}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
+});
+
+// Cart (Using the controller-based routes from your Base Code and Branch 'main')
 Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{item}', [CartController::class, 'add'])->name('cart.add');
@@ -106,3 +132,10 @@ Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show')
 Route::get('profile', function () { return view('profile.dashboard' ) ;});
 Route::get('profile/reviews', function () { return view('profile.reviews' ) ;});
 
+// Orders (User) (Present in your Base Code)
+Route::middleware('auth')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+});
