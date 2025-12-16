@@ -11,24 +11,30 @@ $logo = asset('images/logo.png');
 $profile = asset('images/profile.jpg');
 
 // Data for the specific item being viewed
+$images = [];
+if (isset($item) && is_array($item->images)) {
+    foreach ($item->images as $path) {
+        $images[] = asset('storage/' . $path);
+    }
+}
+
+if (count($images) === 0) {
+    $images[] = 'https://placehold.co/800x600/060771/white?text=Item+Image';
+}
+
 $selectedItem = [
-    'id' => 1,
-    'title' => 'MacBook Air M1 (2020) - 8GB/256GB SSD',
-    'price' => 'Rp 8.500.000',
-    'condition' => 'Used - Like New (Only 1 year old)',
-    'category' => 'Electronics',
-    'eco' => true,
-    'seller_name' => 'andi_s (4.8 rating)',
-    'seller_id' => 10,
-    'location' => 'Dormitory A, Telkom University',
-    'description' => 'Selling my reliable MacBook Air M1. Used primarily for light school work and web browsing. Battery health is still excellent. Comes with original charger and box. Perfect for a student needing a portable and fast laptop.',
-    'images' => [
-        'https://placehold.co/800x600/060771/white?text=Main+Image',
-        'https://placehold.co/800x600/060771/white?text=Side+View',
-        'https://placehold.co/800x600/060771/white?text=Screen+On',
-        'https://placehold.co/800x600/060771/white?text=Box+and+Charger',
-    ],
-    'tags' => ['Laptop', 'Mac', 'M1', 'Gadget'],
+    'id' => $item->id,
+    'title' => $item->title,
+    'price' => 'Rp ' . number_format($item->price, 0, ',', '.'),
+    'condition' => $item->condition,
+    'category' => $item->category,
+    'eco' => (bool) $item->eco_friendly,
+    'seller_name' => $item->user?->name ?? 'Unknown',
+    'seller_id' => $item->user_id,
+    'location' => 'Telkom University',
+    'description' => $item->description,
+    'images' => $images,
+    'tags' => [$item->category],
 ];
 
 // PHP/SVG representation of Lucide icons (adjusted for size)
@@ -81,6 +87,23 @@ $icons = [
                         <p class="text-4xl font-extrabold text-red-600">{{ $selectedItem['price'] }}</p>
                     </div>
 
+                    @auth
+                        @if (auth()->id() === $item->user_id || auth()->user()->role === 'admin')
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('items.edit', $item) }}" class="px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">
+                                    Edit Item
+                                </a>
+                                <form action="{{ route('items.destroy', $item) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" onclick="return confirm('Delete this item?')" class="px-4 py-2 rounded-xl border border-red-300 text-red-600 font-semibold hover:bg-red-50 transition">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        @endif
+                    @endauth
+
                     <div class="space-y-3 text-gray-700">
                         <div class="flex items-center text-lg">
                             <span class="mr-2 text-green-500 w-[18px] h-[18px]">{!! $icons['CheckCircle'] !!}</span>
@@ -108,9 +131,18 @@ $icons = [
                             <span class="text-md font-semibold text-gray-800">Seller: {{ $selectedItem['seller_name'] }}</span>
                         </div>
 
-                        <button class="w-full py-3 bg-blue-600 text-white font-bold text-lg rounded-xl hover:bg-blue-700 transition flex items-center justify-center shadow-lg">
-                            <span class="w-[24px] h-[24px] mr-2">{!! $icons['ShoppingCart'] !!}</span> Add to Cart
-                        </button>
+                        @auth
+                            <form action="{{ route('cart.add', $item) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold text-lg rounded-xl hover:bg-blue-700 transition flex items-center justify-center shadow-lg">
+                                    <span class="w-[24px] h-[24px] mr-2">{!! $icons['ShoppingCart'] !!}</span> Add to Cart
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="w-full py-3 bg-blue-600 text-white font-bold text-lg rounded-xl hover:bg-blue-700 transition flex items-center justify-center shadow-lg">
+                                <span class="w-[24px] h-[24px] mr-2">{!! $icons['ShoppingCart'] !!}</span> Add to Cart
+                            </a>
+                        @endauth
                         
                         <button class="w-full py-3 bg-green-500 text-white font-bold text-lg rounded-xl hover:bg-green-600 transition flex items-center justify-center">
                             <span class="w-[24px] h-[24px] mr-2">{!! $icons['MessageCircle'] !!}</span> Message Seller

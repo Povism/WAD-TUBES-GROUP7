@@ -30,20 +30,13 @@ $icons = [
     'Trash' => '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>'
 ];
 
-// Mock Listing Data
-$listings = [
-    ['id' => 1, 'title' => 'MacBook Air M1', 'seller' => 'andi_s', 'category' => 'Electronics', 'price' => 'Rp 8.5jt', 'status' => 'Active', 'eco' => true, 'date' => '2025-12-08'],
-    ['id' => 2, 'title' => 'Data Structures Textbook', 'seller' => 'bookworm', 'category' => 'Books', 'price' => 'Rp 75k', 'status' => 'Sold', 'eco' => true, 'date' => '2025-12-07'],
-    ['id' => 3, 'title' => 'Ergonomic Office Chair', 'seller' => 'dorm_clear', 'category' => 'Furniture', 'price' => 'Rp 450k', 'status' => 'Pending', 'eco' => false, 'date' => '2025-12-10'],
-    ['id' => 4, 'title' => 'Warm Winter Jacket', 'seller' => 'fashion_eco', 'category' => 'Clothing', 'price' => 'Rp 200k', 'status' => 'Active', 'eco' => true, 'date' => '2025-12-09'],
-];
+$items = $items ?? collect();
 
-// Status colors matching your Admin Dashboard style
 $statusColors = [
-    'Active' => 'bg-green-100 text-green-800',
-    'Pending' => 'bg-yellow-100 text-yellow-800',
-    'Sold' => 'bg-gray-100 text-gray-800', // Added Sold status color
-    'Rejected' => 'bg-red-100 text-red-800',
+    'active' => 'bg-green-100 text-green-800',
+    'pending' => 'bg-yellow-100 text-yellow-800',
+    'sold' => 'bg-gray-100 text-gray-800',
+    'rejected' => 'bg-red-100 text-red-800',
 ];
 ?>
 
@@ -64,9 +57,12 @@ $statusColors = [
             <div class="flex items-center space-x-4">
                 <span class="text-gray-700 text-sm font-medium">{{Auth::user()->name}}</span>
                 <img src="{{ $profile }}" alt="Profile" class="w-8 h-8 rounded-full ring-2 ring-red-500" />
-                <button class="p-2 rounded-full hover:bg-gray-100">
-                    <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['LogOut'] ?? '' !!}</span>
-                </button>
+                <form action="{{ route('logout') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" class="p-2 rounded-full hover:bg-gray-100" title="Log Out">
+                        <span class="text-gray-700 w-[25px] h-[25px]">{!! $icons['LogOut'] ?? '' !!}</span>
+                    </button>
+                </form>
             </div>
         </div>
     </header>
@@ -86,13 +82,13 @@ $statusColors = [
             <div class="lg:col-span-1 space-y-6">
                 <nav class="bg-white p-4 rounded-xl shadow-md sticky top-24"> 
                     <h2 class="text-sm uppercase text-gray-500 font-semibold mb-3">Navigation</h2>
-                    <a href="/admin" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
+                    <a href="{{ route('admin.index') }}" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
                         <span class="mr-3">{!! $icons['LayoutDashboard'] !!}</span> Dashboard Overview
                     </a>
-                    <a href="#" class="flex items-center p-3 rounded-lg bg-blue-100 text-blue-700 font-medium transition mb-1">
+                    <a href="{{ route('admin.items.index') }}" class="flex items-center p-3 rounded-lg bg-blue-100 text-blue-700 font-medium transition mb-1">
                         <span class="mr-3 text-blue-700">{!! $icons['Package'] !!}</span> Listings Management
                     </a>
-                    <a href="/admin/category" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
+                    <a href="{{ route('admin.category.index') }}" class="flex items-center p-3 rounded-lg text-gray-700 transition hover:bg-gray-100 mb-1">
                         <span class="mr-3 text-green-500">{!! $icons['Tags'] !!}</span> Categories & Tags
                     </a>
                 </nav>
@@ -102,24 +98,20 @@ $statusColors = [
                 
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-3">All Active and Pending Listings</h2>
-                    
-                    <div class="flex justify-between items-center mb-6 space-x-4">
-                        <input type="text" placeholder="Search by title or seller..." class="p-2 border border-gray-300 rounded-lg w-full max-w-sm focus:ring-red-500 focus:border-red-500">
+
+                    <form method="GET" action="{{ route('admin.items.index') }}" class="flex justify-between items-center mb-6 space-x-4">
+                        <input type="text" name="q" value="{{ request('q') }}" placeholder="Search by title or seller..." class="p-2 border border-gray-300 rounded-lg w-full max-w-sm focus:ring-red-500 focus:border-red-500">
                         <div class="flex space-x-3">
-                            <select class="p-2 border border-gray-300 rounded-lg text-sm">
-                                <option>Filter by Status</option>
-                                <option>Active</option>
-                                <option>Pending</option>
-                                <option>Sold</option>
+                            <select name="status" class="p-2 border border-gray-300 rounded-lg text-sm">
+                                <option value="">Filter by Status</option>
+                                <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="sold" {{ request('status') === 'sold' ? 'selected' : '' }}>Sold</option>
+                                <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Rejected</option>
                             </select>
-                            <select class="p-2 border border-gray-300 rounded-lg text-sm">
-                                <option>Filter by Category</option>
-                                <option>Electronics</option>
-                                <option>Books</option>
-                                <option>Clothing</option>
-                            </select>
+                            <button type="submit" class="px-4 py-2 bg-red-700 text-white rounded-lg text-sm hover:bg-red-800">Apply</button>
                         </div>
-                    </div>
+                    </form>
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
@@ -135,31 +127,35 @@ $statusColors = [
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach ($listings as $item)
+                                @foreach ($items as $item)
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item['id'] }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->id }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-semibold text-gray-900">{{ $item['title'] }}</div>
-                                        <div class="text-xs text-gray-500">{{ $item['category'] }}</div>
+                                        <div class="text-sm font-semibold text-gray-900">{{ $item->title }}</div>
+                                        <div class="text-xs text-gray-500">{{ $item->category }}</div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item['seller'] }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">{{ $item['price'] }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item->user?->name ?? '—' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColors[$item['status']] ?? 'bg-red-100 text-red-800' }}">
-                                            {{ $item['status'] }}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColors[$item->status] ?? 'bg-gray-100 text-gray-800' }}">
+                                            {{ ucfirst($item->status) }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        @if ($item['eco'])
+                                        @if ($item->eco_friendly)
                                             <span class="text-green-500 w-5 h-5">{!! $icons['Leaf'] !!}</span>
                                         @else
                                             —
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <a href="/items/{{ $item['id'] }}" target="_blank" class="text-blue-600 hover:text-blue-900 mr-2 p-1 inline-flex items-center" title="View Listing">{!! $icons['Eye'] !!}</a>
-                                        <a href="/admin/listings/{{ $item['id'] }}/edit" class="text-indigo-600 hover:text-indigo-900 mr-2 p-1 inline-flex items-center" title="Edit Listing">{!! $icons['Pencil'] !!}</a>
-                                        <button onclick="confirmDelete({{ $item['id'] }})" class="text-red-600 hover:text-red-900 p-1 inline-flex items-center" title="Delete Listing">{!! $icons['Trash'] !!}</button>
+                                        <a href="{{ route('items.show', $item) }}" target="_blank" class="text-blue-600 hover:text-blue-900 mr-2 p-1 inline-flex items-center" title="View Listing">{!! $icons['Eye'] !!}</a>
+                                        <a href="{{ route('admin.items.edit', $item) }}" class="text-indigo-600 hover:text-indigo-900 mr-2 p-1 inline-flex items-center" title="Edit Listing">{!! $icons['Pencil'] !!}</a>
+                                        <form action="{{ route('admin.items.destroy', $item) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900 p-1 inline-flex items-center" title="Delete Listing">{!! $icons['Trash'] !!}</button>
+                                        </form>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -168,13 +164,16 @@ $statusColors = [
                     </div>
 
                     <div class="mt-4 flex justify-between items-center">
-                        <span class="text-sm text-gray-700">Showing 1 to 4 of 1,245 results</span>
-                        <div class="flex space-x-1">
-                            <button class="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300">Previous</button>
-                            <span class="px-3 py-1 text-sm bg-red-700 text-white rounded">1</span>
-                            <button class="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300">2</button>
-                            <button class="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300">Next</button>
-                        </div>
+                        @if (method_exists($items, 'total'))
+                            <span class="text-sm text-gray-700">Total: {{ $items->total() }}</span>
+                        @else
+                            <span class="text-sm text-gray-700">Total: {{ $items->count() }}</span>
+                        @endif
+                        @if (method_exists($items, 'links'))
+                            <div class="text-sm">
+                                {{ $items->links() }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

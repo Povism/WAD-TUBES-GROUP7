@@ -3,8 +3,17 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+// Added missing Order Controllers
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\ForumController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\Admin\ItemController as AdminItemController;
+use App\Models\Item;
+use App\Models\User;
+use App\Models\Forum; // Use the Forum model import from the Base Code
 
 
 // fix the routes according to ur features these are just here for testing
@@ -17,41 +26,105 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 
-// Home
-Route::get('/', function () { return view('home'); })->name('home');
-    
-// Admin
-Route::get('/admin', function () { return view('admin.index'); });
-Route::get('/admin/items', function () { return view('admin.items.index'); });
-Route::get('/admin/category', function () { return view('admin.category.index'); });
+// Home (Using the more complete logic from your Base Code)
+Route::get('/', function () {
 
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    // Admin Order Management
-    Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
-    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
-    Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
-    Route::put('/orders/{order}', [AdminOrderController::class, 'update'])->name('admin.orders.update');
-    Route::delete('/orders/{order}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
+    $featuredItems = Item::query()
+        ->where('status', 'active')
+        ->latest()
+        ->take(8)
+        ->get();
+
+    $threads = Forum::with('user')
+        ->withCount('comments')
+        ->orderBy('created_at', 'desc')
+        ->take(3)
+        ->get();
+        
+    $itemsExchanged = Item::query()->count();
+    $studentsEngaged = User::query()->count();
+    $wastePreventedKg = $itemsExchanged;
+
+    return view('home', compact(
+        'featuredItems', 
+        'threads', 
+        'itemsExchanged', 
+        'studentsEngaged', 
+        'wastePreventedKg'
+    ));
+    
+})->name('home');
+    
+// Admin (Using the grouped, controller-based structure from your Base Code and Branch 'main')
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', function () {
+        $totalUsers = User::query()->count();
+        $activeListings = Item::query()->where('status', 'active')->count();
+        $categoryCount = Item::query()->whereNotNull('category')->distinct('category')->count('category');
+
+        $recentListings = Item::query()
+            ->with('user')
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return view('admin.index', compact('totalUsers', 'activeListings', 'categoryCount', 'recentListings'));
+    })->name('index');
+    Route::get('/category', function () { return view('admin.category.index'); })->name('category.index');
+
+    // Admin Item Management
+    Route::get('/items', [AdminItemController::class, 'index'])->name('items.index');
+    Route::get('/items/{item}/edit', [AdminItemController::class, 'edit'])->name('items.edit');
+    Route::put('/items/{item}', [AdminItemController::class, 'update'])->name('items.update');
+    Route::delete('/items/{item}', [AdminItemController::class, 'destroy'])->name('items.destroy');
+
+    // Admin Order Management (Added from conflict branch 'Aryan')
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::put('/orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
+    Route::delete('/orders/{order}', [AdminOrderController::class, 'destroy'])->name('orders.destroy');
 });
-// Cart
-Route::middleware('auth')->group(function () {
-    Route::get('/cart', function () { return view('cart.checkout'); })->name('cart.checkout');
+
+// Cart (Using the controller-based routes from your Base Code and Branch 'main')
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{item}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/items/{cartItem}/delta', [CartController::class, 'delta'])->name('cart.items.delta');
+    Route::delete('/cart/items/{cartItem}', [CartController::class, 'remove'])->name('cart.items.remove');
 });
 
 // Forum
+//Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
 
-Route::get('/forum', function () { return view('forum.index'); });
-Route::get('/forum/create', function () { return view('forum.create'); });
-Route::post('/forum/{forum}', function () { return view('forum.store'); });
-Route::get('/forum/{forum}', function ($id) { return view('forum.show' ); });
-Route::put('/forum/{forum}', function () { return view('forum.update'); });
+Route::middleware(['auth', 'role:student'])->group(function () {
+Route::get('/forum/create', [ForumController::class, 'create'])->name('forum.create');
+Route::post('/forum', [ForumController::class, 'store'])->name('forum.store');
+Route::get('/forum/{forum}/edit', [ForumController::class, 'edit'])->name('forum.edit');
+Route::put('/forum/{forum}', [ForumController::class, 'update'])->name('forum.update');
+Route::delete('/forum/{forum}', [ForumController::class, 'destroy'])->name('forum.destroy');
+
+//Comment Reply
+Route::post('/forum/{forum}/comments', [CommentController::class, 'store'])->name('comment.store');
+Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comment.destroy');
+});
+
+Route::get('/forum/{forum}', [ForumController::class, 'show'])->name('forum.show');
 
 // Item Listing
 
-Route::get('/items', function () { return view('items.index' ); })->name('items.index');
-Route::get('/items/create', function () { return view('items.create' ); });
-Route::get('/items/{item}', function ($id) { return view('items.show' ); });
-Route::put('/items/{item}', function ($id) { return view('items.update' ); });
+Route::get('/items', [ItemController::class, 'index'])->name('items.index');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
+    Route::post('/items', [ItemController::class, 'store'])->name('items.store');
+    Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
+    Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
+    Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+});
+
+Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
 
 
 // Profile
@@ -59,20 +132,10 @@ Route::put('/items/{item}', function ($id) { return view('items.update' ); });
 Route::get('profile', function () { return view('profile.dashboard' ) ;});
 Route::get('profile/reviews', function () { return view('profile.reviews' ) ;});
 
-// Orders (User)
+// Orders (User) (Present in your Base Code)
 Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 });
-
-
-
-
-
-
-
-
-
-

@@ -6,12 +6,7 @@
     {{-- The variables that define your main page content must be here or passed from the controller --}}
     @php
         // These variables were moved from the layout file and are needed for the content sections below
-        $featuredItems = [
-            [ 'id' => 1, 'title' => 'MacBook Air M1', 'price' => 'Rp 8.500.000', 'condition' => 'Used', 'category' => 'Electronics', 'eco' => true, 'img' => 'https://placehold.co/300x200/060771/white?text=MacBook' ],
-            [ 'id' => 2, 'title' => 'Data Structures Textbook', 'price' => 'Rp 75.000', 'condition' => 'Good', 'category' => 'Books', 'eco' => true, 'img' => 'https://placehold.co/300x200/7132CA/white?text=Book' ],
-            [ 'id' => 3, 'title' => 'Office Chair', 'price' => 'Rp 450.000', 'condition' => 'Used', 'category' => 'Furniture', 'eco' => false, 'img' => 'https://placehold.co/300x200/DE1A58/white?text=Chair' ],
-            [ 'id' => 4, 'title' => 'Winter Jacket', 'price' => 'Rp 200.000', 'condition' => 'New', 'category' => 'Clothing', 'eco' => true, 'img' => 'https://placehold.co/300x200/BF1A1A/white?text=Jacket' ],
-        ];
+        $featuredItems = $featuredItems ?? collect();
         
         $icons = [
             // Only define icons used in the content section (not already in the layout)
@@ -60,13 +55,13 @@
     <div class="bg-white py-3 shadow-sm">
         <div class="container mx-auto px-4 flex flex-wrap justify-center gap-6 text-center">
             <div>
-                <span class="font-bold text-green-600">124 kg</span> waste prevented
+                <span class="font-bold text-green-600">{{ number_format($wastePreventedKg ?? 0) }} kg</span> waste prevented
             </div>
             <div>
-                <span class="font-bold text-blue-600">542</span> items exchanged
+                <span class="font-bold text-blue-600">{{ number_format($itemsExchanged ?? 0) }}</span> items exchanged
             </div>
             <div>
-                <span class="font-bold text-purple-600">1,200+</span> students engaged
+                <span class="font-bold text-purple-600">{{ number_format($studentsEngaged ?? 0) }}</span> students engaged
             </div>
         </div>
     </div>
@@ -76,10 +71,10 @@
             <h3 class="text-2xl font-bold text-center mb-8">Browse by Category</h3>
             <div class="flex flex-wrap justify-center gap-6">
                 @foreach ($categories as $cat)
-                    <div class="flex flex-col items-center bg-white p-6 rounded-xl shadow hover:shadow-md transition cursor-pointer w-32">
+                    <a href="{{ route('items.index', ['category' => $cat['name']]) }}" class="flex flex-col items-center bg-white p-6 rounded-xl shadow hover:shadow-md transition cursor-pointer w-32">
                         <div class="text-blue-600 mb-2">{!! $cat['icon'] !!}</div>
                         <span class="font-medium">{{ $cat['name'] }}</span>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         </div>
@@ -96,18 +91,27 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach ($featuredItems as $item)
                     <div class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden relative">
-                        <img src="{{ $item['img'] }}" alt="{{ $item['title'] }}" class="w-full h-48 object-cover" />
-                        @if ($item['eco'])
+                        @php
+                            $thumb = (is_array($item->images) && count($item->images) > 0)
+                                ? asset('storage/' . $item->images[0])
+                                : 'https://placehold.co/300x200/060771/white?text=Item+Image';
+                        @endphp
+                        <a href="{{ route('items.show', $item) }}" class="block">
+                            <img src="{{ $thumb }}" alt="{{ $item->title }}" class="w-full h-48 object-cover" loading="lazy" />
+                        </a>
+                        @if ($item->eco_friendly)
                             <div class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-bl">
                                 Eco-Friendly
                             </div>
                         @endif
                         <div class="p-4">
                             <div class="flex justify-between items-start">
-                                <h4 class="font-semibold text-gray-800 line-clamp-1">{{ $item['title'] }}</h4>
-                                <span class="text-green-600 font-bold">{{ $item['price'] }}</span>
+                                <a href="{{ route('items.show', $item) }}" class="font-semibold text-gray-800 line-clamp-1 hover:text-blue-700 transition">
+                                    {{ $item->title }}
+                                </a>
+                                <span class="text-green-600 font-bold">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
                             </div>
-                            <p class="text-sm text-gray-500 mt-1">{{ $item['condition'] }} • {{ $item['category'] }}</p>
+                            <p class="text-sm text-gray-500 mt-1">{{ $item->condition }} • {{ $item->category }}</p>
                             <div class="flex justify-between items-center mt-4">
                                 <div class="flex items-center">
                                     <div class="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs font-bold text-white">U</div>
