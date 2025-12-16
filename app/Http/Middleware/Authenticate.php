@@ -10,7 +10,7 @@ class Authenticate
     public function handle($request, Closure $next)
     {
 
-        if ($request->routeIs('login') || $request->routeIs('register') || $request->is('/')) {
+        if ($request->routeIs('login') || $request->routeIs('register') || $request->routeIs('home')) {
             return $next($request);
         }
 

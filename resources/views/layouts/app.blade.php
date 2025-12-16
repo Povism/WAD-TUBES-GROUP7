@@ -31,6 +31,12 @@
         ];
         $logo = asset('images/logo.png'); // Placeholder
         $profile = asset('images/profile.jpg'); // Placeholder
+        $cartCount = 0;
+        if (auth()->check()) {
+            $cartCount = (int) \App\Models\CartItem::query()
+                ->where('user_id', auth()->id())
+                ->sum('quantity');
+        }
     @endphp
 
     <div>
@@ -60,7 +66,9 @@
                     {{-- Cart Button --}}
                     <button class="p-2 rounded-full hover:bg-gray-100 relative">
                         <a href="/cart" class="text-gray-700 w-[25px] h-[25px]">{!! $icons['ShoppingCart'] !!}</a>
-                        <span class="absolute -top-1.5 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                        @if ($cartCount > 0)
+                            <span class="absolute -top-1.5 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">{{ $cartCount }}</span>
+                        @endif
                     </button>
 
                     {{-- Conditional Rendering for Auth/Guest --}}

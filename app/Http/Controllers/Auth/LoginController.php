@@ -11,7 +11,9 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
-            return redirect()->route('home');
+            return Auth::user()->role === 'admin'
+                ? redirect()->route('admin.index')
+                : redirect()->route('home');
         }
         return view('auth.login');
     }
@@ -29,7 +31,12 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
-            return redirect()->intended('/')->with('success', $remember 
+
+            $defaultRedirect = Auth::user()->role === 'admin'
+                ? route('admin.index')
+                : route('home');
+
+            return redirect()->intended($defaultRedirect)->with('success', $remember 
                 ? 'You have successfully logged in with Remember Me activated!' 
                 : 'You have successfully logged in!');
         }
