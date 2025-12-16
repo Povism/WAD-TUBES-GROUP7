@@ -9,20 +9,6 @@
 $logo = asset('images/logo.png');
 $profile = asset('images/profile.jpg');
 
-$cartItems = [
-    [ 'id' => 1, 'title' => 'MacBook Air M1', 'price' => 8500000, 'qty' => 1, 'img' => 'https://placehold.co/80x80/060771/white?text=MB', 'seller' => 'andi_s' ],
-    [ 'id' => 2, 'title' => 'Data Structures Textbook', 'price' => 75000, 'qty' => 2, 'img' => 'https://placehold.co/80x80/7132CA/white?text=Book', 'seller' => 'bookworm' ],
-    [ 'id' => 3, 'title' => 'Portable Electric Fan', 'price' => 50000, 'qty' => 1, 'img' => 'https://placehold.co/80x80/00A9E0/white?text=Fan', 'seller' => 'hot_student' ],
-];
-
-// Calculation Logic
-$subtotal = array_reduce($cartItems, function($carry, $item) {
-    return $carry + ($item['price'] * $item['qty']);
-}, 0);
-
-$deliveryFee = 15000; // Mock fixed delivery fee
-$total = $subtotal + $deliveryFee;
-
 $rupiahFormat = function($amount) {
     return 'Rp ' . number_format($amount, 0, ',', '.');
 };
@@ -49,7 +35,7 @@ $icons = [
     <section class="bg-white py-8 border-b">
         <div class="container mx-auto px-4">
             <h1 class="text-3xl font-bold text-gray-800">Your Shopping Cart</h1>
-            <p class="text-gray-500 mt-1">{{ count($cartItems) }} items from {{ count(array_unique(array_column($cartItems, 'seller'))) }} sellers.</p>
+            <p class="text-gray-500 mt-1">{{ method_exists($cartItems, 'count') ? $cartItems->count() : 0 }} items from {{ $sellerCount ?? 0 }} sellers.</p>
         </div>
     </section>
 
@@ -61,27 +47,49 @@ $icons = [
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <h2 class="text-xl font-semibold mb-4 border-b pb-3">Items Review</h2>
                     <div class="space-y-4 divide-y">
-                        @foreach ($cartItems as $item)
-                            <div class="pt-4 flex items-start justify-between">
-                                <img src="{{ $item['img'] }}" alt="{{ $item['title'] }}" class="w-20 h-20 object-cover rounded-lg mr-4 border">
-                                <div class="flex-grow">
-                                    <h4 class="font-semibold text-gray-800">{{ $item['title'] }}</h4>
-                                    <p class="text-sm text-gray-500">Seller: {{ $item['seller'] }}</p>
-                                    <p class="text-green-600 font-bold mt-1">{{ $rupiahFormat($item['price']) }}</p>
-                                </div>
-                                
-                                <div class="flex flex-col items-end space-y-2">
-                                    <div class="flex items-center border border-gray-300 rounded-lg">
-                                        <button class="p-2 hover:bg-gray-100 text-gray-600">{!! $icons['Minus'] !!}</button>
-                                        <span class="px-3 text-sm font-medium">{{ $item['qty'] }}</span>
-                                        <button class="p-2 hover:bg-gray-100 text-gray-600">{!! $icons['Plus'] !!}</button>
+                        @if (method_exists($cartItems, 'count') && $cartItems->count() === 0)
+                            <div class="pt-4 text-gray-600">Your cart is empty.</div>
+                        @else
+                            @foreach ($cartItems as $cartItem)
+                                @php
+                                    $item = $cartItem->item;
+                                    $thumb = (isset($item) && is_array($item->images) && count($item->images) > 0)
+                                        ? asset('storage/' . $item->images[0])
+                                        : 'https://placehold.co/80x80/060771/white?text=Item';
+                                @endphp
+                                <div class="pt-4 flex items-start justify-between">
+                                    <img src="{{ $thumb }}" alt="{{ $item?->title }}" class="w-20 h-20 object-cover rounded-lg mr-4 border">
+                                    <div class="flex-grow">
+                                        <h4 class="font-semibold text-gray-800">{{ $item?->title }}</h4>
+                                        <p class="text-sm text-gray-500">Seller: {{ $item?->user?->name ?? 'Unknown' }}</p>
+                                        <p class="text-green-600 font-bold mt-1">{{ $rupiahFormat((int) ($item?->price ?? 0)) }}</p>
                                     </div>
-                                    <button class="text-red-500 hover:text-red-700 flex items-center text-sm">
-                                        <span class="w-[18px] h-[18px] mr-1">{!! $icons['Trash'] !!}</span> Remove
-                                    </button>
+                                    
+                                    <div class="flex flex-col items-end space-y-2">
+                                        <div class="flex items-center border border-gray-300 rounded-lg">
+                                            <form action="{{ route('cart.items.delta', $cartItem) }}" method="POST" class="inline">
+                                                @csrf
+                                                <input type="hidden" name="delta" value="-1" />
+                                                <button type="submit" class="p-2 hover:bg-gray-100 text-gray-600">{!! $icons['Minus'] !!}</button>
+                                            </form>
+                                            <span class="px-3 text-sm font-medium">{{ $cartItem->quantity }}</span>
+                                            <form action="{{ route('cart.items.delta', $cartItem) }}" method="POST" class="inline">
+                                                @csrf
+                                                <input type="hidden" name="delta" value="1" />
+                                                <button type="submit" class="p-2 hover:bg-gray-100 text-gray-600">{!! $icons['Plus'] !!}</button>
+                                            </form>
+                                        </div>
+                                        <form action="{{ route('cart.items.remove', $cartItem) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-500 hover:text-red-700 flex items-center text-sm" onclick="return confirm('Remove this item from cart?')">
+                                                <span class="w-[18px] h-[18px] mr-1">{!! $icons['Trash'] !!}</span> Remove
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        @endif
                     </div>
                 </div>
 
@@ -90,7 +98,7 @@ $icons = [
                         <span class="w-[24px] h-[24px] mr-2 text-red-500">{!! $icons['Truck'] !!}</span> Delivery Information
                     </h2>
                     <div class="space-y-3">
-                        <p class="font-medium text-gray-700">Recipient: John Doe (Dormitory 1, Room B-302)</p>
+                        <p class="font-medium text-gray-700">Recipient: {{ auth()->user()->name }} (Telkom University)</p>
                         <p class="text-gray-500 text-sm">Telkom University, Jl. Telekomunikasi No.1, Bandung, 40257</p>
                         <button class="text-sm text-blue-600 hover:underline">Change Address</button>
                     </div>
@@ -120,12 +128,12 @@ $icons = [
 
                     <div class="space-y-3 pb-4 border-b">
                         <div class="flex justify-between text-gray-600">
-                            <span>Subtotal ({{ count($cartItems) }} items)</span>
-                            <span>{{ $rupiahFormat($subtotal) }}</span>
+                            <span>Subtotal ({{ method_exists($cartItems, 'count') ? $cartItems->count() : 0 }} items)</span>
+                            <span>{{ $rupiahFormat((int) ($subtotal ?? 0)) }}</span>
                         </div>
                         <div class="flex justify-between text-gray-600">
                             <span>Delivery Fee (Campus)</span>
-                            <span>{{ $rupiahFormat($deliveryFee) }}</span>
+                            <span>{{ $rupiahFormat((int) ($deliveryFee ?? 0)) }}</span>
                         </div>
                         <div class="flex justify-between text-gray-600">
                             <span>Voucher Applied</span>
@@ -135,7 +143,7 @@ $icons = [
 
                     <div class="flex justify-between items-center pt-4 mb-6">
                         <span class="text-xl font-bold">Total Payment</span>
-                        <span class="text-2xl font-bold text-green-600">{{ $rupiahFormat($total) }}</span>
+                        <span class="text-2xl font-bold text-green-600">{{ $rupiahFormat((int) ($total ?? 0)) }}</span>
                     </div>
 
                     <button class="w-full bg-green-600 text-white text-lg font-semibold py-3 rounded-xl hover:bg-green-700 transition shadow-md">
